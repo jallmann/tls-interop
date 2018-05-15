@@ -25,5 +25,5 @@ pub fn flatten(mat: &Vec<Vec<Vec<String>>>) -> Vec<Vec<String>> {
     let mut result = vec![];
 
     flatten_sub(mat, 0, &so_far, &mut result);
-    return result;
+    result
 }

@@ -97,7 +97,7 @@ impl Agent {
                 let sock = listener.accept();
 
                 debug!("Accepted");
-                return Ok(Agent {
+                Ok(Agent {
                     name: name.to_owned(),
                     path: path.to_owned(),
                     args: args,
@@ -105,14 +105,14 @@ impl Agent {
                     child: rxf2,
                     alive: true,
                     exit_value: None,
-                });
+                })
             }
             STATUS => {
                 let err = rxf.try_recv().unwrap();
                 info!("Failed {}", err);
-                return Err(err);
+                Err(err)
             }
-            _ => return Err(-1),
+            _ => Err(-1)
         }
     }
 
@@ -128,6 +128,6 @@ impl Agent {
 
         let code = self.child.try_recv().unwrap();
         debug!("Exit status for {} = {}", self.name, code);
-        return TestResult::from_status(code);
+        TestResult::from_status(code)
     }
 }

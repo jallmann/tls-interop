@@ -222,7 +222,7 @@ fn run_test_case_inner(config: &TestConfig,
 
     shuttle(&mut client, &mut server);
 
-    return TestResult::merge(client.check_status(), server.check_status());
+    TestResult::merge(client.check_status(), server.check_status())
 }
 
 fn main() {
