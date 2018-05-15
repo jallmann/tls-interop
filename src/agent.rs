@@ -91,33 +91,29 @@ impl Agent {
 
         poll.poll(&mut events, None).unwrap();
         debug!("Poll finished!");
-        for event in events.iter() {
-            debug!("Event!");
-            match event.token() {
-                SERVER => {
-                    let sock = listener.accept();
 
-                    debug!("Accepted");
-                    return Ok(Agent {
-                        name: name.to_owned(),
-                        path: path.to_owned(),
-                        args: args,
-                        socket: sock.unwrap().0,
-                        child: rxf2,
-                        alive: true,
-                        exit_value: None,
-                    });
-                }
-                STATUS => {
-                    let err = rxf.try_recv().unwrap();
-                    info!("Failed {}", err);
-                    return Err(err);
-                }
-                _ => return Err(-1),
+        match events.iter().next().unwrap().token() {
+            SERVER => {
+                let sock = listener.accept();
+
+                debug!("Accepted");
+                return Ok(Agent {
+                    name: name.to_owned(),
+                    path: path.to_owned(),
+                    args: args,
+                    socket: sock.unwrap().0,
+                    child: rxf2,
+                    alive: true,
+                    exit_value: None,
+                });
             }
+            STATUS => {
+                let err = rxf.try_recv().unwrap();
+                info!("Failed {}", err);
+                return Err(err);
+            }
+            _ => return Err(-1),
         }
-
-        unreachable!()
     }
 
     // Read the status from the subthread.
