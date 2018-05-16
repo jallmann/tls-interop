@@ -27,7 +27,7 @@ pub struct Agent {
 
 impl Agent {
     pub fn new(name: &str,
-               path: &String,
+               path: &str,
                agent: &Option<TestCaseAgent>,
                args: Vec<String>)
                -> Result<Agent, i32> {
@@ -41,7 +41,7 @@ impl Agent {
         // Start the subprocess.
         let mut command = Command::new(path.to_owned());
         // Process parameters.
-        if let &Some(ref a) = agent {
+        if let Some(ref a) = *agent {
             if let Some(ref min) = a.min_version {
                 command.arg("-min-version");
                 command.arg(min.to_string());
@@ -58,7 +58,7 @@ impl Agent {
         }
 
         // Add specific args.
-        for arg in args.iter() {
+        for arg in &args {
             command.arg(arg);
         }
 

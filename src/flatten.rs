@@ -10,7 +10,7 @@ fn flatten_sub(mat: &Vec<Vec<Vec<String>>>,
     // nxt is now pointing to Vec<Vec<String>>, so iterate over
     // that vector, flattening each string into so_far and then
     // pass it down to the next set of variables.
-    for args in mat.get(index).unwrap() {
+    for args in &mat[index] {
         let mut so_far_inner = so_far.clone();
         for arg in args {
             so_far_inner.push(arg.clone());
