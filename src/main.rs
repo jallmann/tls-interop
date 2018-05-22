@@ -87,6 +87,7 @@ pub struct TestConfig {
     client_shim: String,
     server_shim: String,
     rootdir: String,
+    client_writes_first: bool,
 }
 
 // The results of the entire test run.
@@ -192,8 +193,10 @@ fn run_test_case_inner(config: &TestConfig,
                        extra_client_args: &Vec<String>,
                        extra_server_args: &Vec<String>)
                        -> TestResult {
-    // Create the server args
+    // Create the server and client args
     let mut server_args = extra_server_args.clone();
+    let mut client_args = extra_client_args.clone();
+
     server_args.push(String::from("-server"));
     let key_base = match case.server_key {
         None => String::from("rsa_1024"),
@@ -203,7 +206,13 @@ fn run_test_case_inner(config: &TestConfig,
     server_args.push(config.rootdir.clone() + &key_base + &String::from("_key.pem"));
     server_args.push(String::from("-cert-file"));
     server_args.push(config.rootdir.clone() + &key_base + &String::from("_cert.pem"));
-    server_args.push(String::from("-write-then-read"));
+
+    //Decide if client or server should write first after successful handshake.
+    //Only nss_bogo_shim can do -write-then-read. bssl_shim can only be used in the passive role.
+    match config.client_writes_first {
+        true => {client_args.push(String::from("-write-then-read"));},
+        false => {server_args.push(String::from("-write-then-read"));},
+    }
 
     let mut server = match Agent::new("server", &config.server_shim, &case.server, server_args) {
         Ok(a) => a,
@@ -212,7 +221,6 @@ fn run_test_case_inner(config: &TestConfig,
         }
     };
 
-    let client_args = extra_client_args.clone();
     let mut client = match Agent::new("client", &config.client_shim, &case.client, client_args) {
         Ok(a) => a,
         Err(e) => {
@@ -250,12 +258,18 @@ fn main() {
             .help("The test cases file to run")
             .takes_value(true)
             .required(true))
+        .arg(Arg::with_name("client-writes-first")
+            .long("client-writes-first")
+            .help("Client writes after handshake instead of server")
+            .takes_value(false)
+            .required(false))
         .get_matches();
 
     let config = TestConfig {
         client_shim: String::from(matches.value_of("client").unwrap()),
         server_shim: String::from(matches.value_of("server").unwrap()),
         rootdir: String::from(matches.value_of("rootdir").unwrap()),
+        client_writes_first: matches.is_present("client-writes-first"),
     };
 
     let mut f = File::open(matches.value_of("cases").unwrap()).unwrap();
