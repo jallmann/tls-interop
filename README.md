@@ -24,6 +24,8 @@ tls_interop --client ${NSS_ROOT}/dist/Darwin15.6.0_cc_64_DBG.OBJ/bin/nss_bogo_sh
 To swap client and server, you need to run it twice.
 
 
-
-
-
+Cargo Test Instructions
+============================
+Some of the internal rust test cases run with "cargo test" assume readily built versions of nss and boringssl being available.
+The NSS shim is expected to be found at "../dist/Debug/bin/nss_bogo_shim".
+The BoringSSL shim is expected to be found at "../boringssl/build/ssl/test/bssl_shim".
