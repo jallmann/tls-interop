@@ -120,12 +120,12 @@ impl Results {
         }
     }
 
-    fn update(&mut self, case: &TestCase, index: Option<u32>, result: TestResult) {
+    fn update(&mut self, case: &TestCase, index: Option<u32>, result: &TestResult) {
         self.ran += 1;
 
         info!("{}: {}", result.to_string(), Results::case_name(case, index));
 
-        match result {
+        match *result {
             TestResult::OK => self.succeeded += 1,
             TestResult::Skipped => self.skipped += 1,
             TestResult::Failed => {
@@ -139,7 +139,7 @@ impl Results {
 fn make_params(params: &Option<TestCaseParams>) -> Vec<Vec<String>> {
     let mut mat = vec![];
 
-    if let &Some(ref p) = params {
+    if let Some(ref p) = *params {
         if let Some(ref versions) = p.versions {
             let mut alist = vec![];
             for ver in versions {
@@ -160,7 +160,7 @@ fn make_params(params: &Option<TestCaseParams>) -> Vec<Vec<String>> {
 }
 
 fn run_test_case_meta(results: &mut Results, config: &TestConfig, case: &TestCase) {
-    if !case.client_params.is_some() && !case.server_params.is_some() {
+    if case.client_params.is_none() && case.server_params.is_none() {
         let dummy = vec![];
         run_test_case(results, config, case, None, &dummy, &dummy);
     } else {
@@ -185,7 +185,7 @@ fn run_test_case(results: &mut Results,
                  extra_server_args: &Vec<String>) {
 
     let r = run_test_case_inner(config, case, extra_client_args, extra_server_args);
-    results.update(case, index, r);
+    results.update(case, index, &r);
 }
 
 fn run_test_case_inner(config: &TestConfig,
@@ -230,7 +230,7 @@ fn run_test_case_inner(config: &TestConfig,
 
     shuttle(&mut client, &mut server);
 
-    return TestResult::merge(client.check_status(), server.check_status());
+    TestResult::merge(client.check_status(), server.check_status())
 }
 
 fn main() {
