@@ -1,0 +1,7 @@
+sudo: required
+dist: trusty
+language: rust
+rust:
+  - stable
+cache: cargo
+script: ./travis_script.sh
