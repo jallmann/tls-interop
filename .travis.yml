@@ -3,5 +3,10 @@ dist: trusty
 language: rust
 rust:
   - stable
-cache: cargo
-script: ./travis_script.sh
+env:
+  - LD_LIBRARY_PATH=/home/travis/build/jallmann/dist/Debug/lib
+addons:
+  hosts:
+    - localhost.localdomain
+script:
+  - ./travis_script.sh

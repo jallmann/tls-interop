@@ -19,32 +19,39 @@
 #apt-get clean
 #apt-get autoclean
 sudo apt-get -qq update
-sudo apt-get install gyp -y
+#sudo apt-get install gyp -y
 sudo apt-get install ninja-build -y
 sudo apt-get install zlib1g-dev -y
 
+cd ..
+git clone https://chromium.googlesource.com/external/gyp
+cd gyp
+./setup.py build
+sudo ./setup.py install
 cd ..
 hg clone https://hg.mozilla.org/projects/nspr
 hg clone https://hg.mozilla.org/projects/nss
 cd nss
 ./build.sh
-pwd
 cd ..
-ls
+git clone https://github.com/google/boringssl.git
+cd boringssl
+mkdir build
+cd build
+cmake ..
+make
+cd ../..
 
-
-# cd ..
-# git clone https://github.com/google/boringssl.git
-# cd boringssl
-# mkdir build
-# cd build
-# cmake ..
-# make
-# cd ../..
-
-sudo echo "127.0.0.1 localhost.localdomain" >> /etc/hosts
-sudo echo "::1 localhost.localdomain" >> /etc/hosts
-export LD_LIBRARY_PATH=./dist/Debug/lib/
+#sudo echo "127.0.0.1 localhost.localdomain" >> /etc/hosts
+#sudo echo "::1 localhost.localdomain" >> /etc/hosts
 cd tls-interop/
-pwd
+
+cargo build
+export RUST_LOG=debug
+export HOST=localhost
+export DOMSUF=localdomain
+echo $HOST
+echo $DOMSUF
+cat /etc/hosts
+cargo run -- --client /home/travis/build/jallmann/dist/Debug/bin/nss_bogo_shim --server /home/travis/build/jallmann/boringssl/build/ssl/test/bssl_shim --rootdir /home/travis/build/jallmann/boringssl/ssl/test/runner/ --test-cases cases.json --client-writes-first
 cargo test
