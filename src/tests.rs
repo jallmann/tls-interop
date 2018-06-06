@@ -1,5 +1,8 @@
+#[cfg(test)]
 use super::*;
+#[cfg(test)]
 use std::path::Path;
+#[cfg(test)]
 use std::env;
 
 // Test the flattener
@@ -24,7 +27,6 @@ fn flatten_unittest() {
 
 #[test]
 fn nss_loopback_simple() {
-    
     let dirs = read_shim_paths_from_env_vars();
     let nss_shim_path = &dirs[0];
     let boring_runner_path = &dirs[2];
@@ -56,7 +58,6 @@ fn nss_loopback_simple() {
 
 #[test]
 fn nss_client_vs_boring_server_simple() {
-    
     let dirs = read_shim_paths_from_env_vars();
     let nss_shim_path = &dirs[0];
     let boring_shim_path = &dirs[1];
@@ -91,7 +92,6 @@ fn nss_client_vs_boring_server_simple() {
 
 #[test]
 fn nss_server_vs_boring_client_simple() {
-
     let dirs = read_shim_paths_from_env_vars();
     let nss_shim_path = &dirs[0];
     let boring_shim_path = &dirs[1];
@@ -126,8 +126,8 @@ fn nss_server_vs_boring_client_simple() {
 
 
 //Reads shim paths from Environment, or returns default (../dist/ and ../boringssl/).
+#[cfg(test)]
 fn read_shim_paths_from_env_vars() -> Vec<String> {
-    
     let nss_shim_path = match env::var_os("NSS_SHIM_PATH") {
         Some(val) => val.into_string().unwrap(),
         None => String::from("../dist/Debug/bin/nss_bogo_shim"),
@@ -138,6 +138,6 @@ fn read_shim_paths_from_env_vars() -> Vec<String> {
     };
     let boring_shim_path = format!("{}build/ssl/test/bssl_shim", &boring_root_dir);
     let boring_runner_path = format!("{}ssl/test/runner/", &boring_root_dir);
-    
+
     vec![nss_shim_path, boring_shim_path, boring_runner_path]
 }

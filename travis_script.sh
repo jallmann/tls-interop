@@ -18,8 +18,9 @@
 #apt-get autoremove -y
 #apt-get clean
 #apt-get autoclean
-sudo apt-get -qq update
 #sudo apt-get install gyp -y
+
+sudo apt-get -qq update
 sudo apt-get install ninja-build -y
 sudo apt-get install zlib1g-dev -y
 
@@ -40,18 +41,12 @@ mkdir build
 cd build
 cmake ..
 make
-cd ../..
+cd ../../tls-interop/
 
-#sudo echo "127.0.0.1 localhost.localdomain" >> /etc/hosts
-#sudo echo "::1 localhost.localdomain" >> /etc/hosts
-cd tls-interop/
+#cargo build
+#echo $HOST
+#echo $DOMSUF
+#cat /etc/hosts
+#cargo run -- --client /home/travis/build/jallmann/dist/Debug/bin/nss_bogo_shim --server /home/travis/build/jallmann/boringssl/build/ssl/test/bssl_shim --rootdir /home/travis/build/jallmann/boringssl/ssl/test/runner/ --test-cases cases.json --client-writes-first
 
-cargo build
-export RUST_LOG=debug
-export HOST=localhost
-export DOMSUF=localdomain
-echo $HOST
-echo $DOMSUF
-cat /etc/hosts
-cargo run -- --client /home/travis/build/jallmann/dist/Debug/bin/nss_bogo_shim --server /home/travis/build/jallmann/boringssl/build/ssl/test/bssl_shim --rootdir /home/travis/build/jallmann/boringssl/ssl/test/runner/ --test-cases cases.json --client-writes-first
 cargo test
