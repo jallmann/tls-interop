@@ -1,0 +1,12 @@
+sudo: required
+dist: trusty
+language: rust
+rust:
+  - stable
+env:
+  - LD_LIBRARY_PATH=/home/travis/build/jallmann/dist/Debug/lib
+addons:
+  hosts:
+    - localhost.localdomain
+script:
+  - ./travis_script.sh
