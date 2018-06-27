@@ -27,19 +27,7 @@ fn flatten_unittest() {
 
 #[test]
 fn nss_loopback_simple() {
-    let dirs = read_shim_paths_from_env_vars();
-    let nss_shim_path = &dirs[0];
-    let boring_runner_path = &dirs[2];
-
-    assert!(Path::new(nss_shim_path).exists(),
-            "nss_bogo_shim not found at {}", nss_shim_path);
-
-    let config = TestConfig {
-        client_shim: nss_shim_path.clone(),
-        server_shim: nss_shim_path.clone(),
-        rootdir: boring_runner_path.clone(),
-        client_writes_first: false,
-    };
+    let config = prepare_config(ConfigType::NssLoopback);
 
     let c = TestCase {
         name: String::from("Simple-Connect"),
@@ -58,22 +46,7 @@ fn nss_loopback_simple() {
 
 #[test]
 fn nss_client_vs_boring_server_simple() {
-    let dirs = read_shim_paths_from_env_vars();
-    let nss_shim_path = &dirs[0];
-    let boring_shim_path = &dirs[1];
-    let boring_runner_path = &dirs[2];
-
-    assert!(Path::new(nss_shim_path).exists(),
-            "nss_bogo_shim not found at {}", nss_shim_path);
-    assert!(Path::new(boring_shim_path).exists(),
-            "bssl_shim not found at {}", boring_shim_path);
-
-    let config = TestConfig {
-        client_shim: nss_shim_path.clone(),
-        server_shim: boring_shim_path.clone(),
-        rootdir: boring_runner_path.clone(),
-        client_writes_first: true,
-    };
+    let config = prepare_config(ConfigType::BsslServer);
 
     let c = TestCase {
         name: String::from("Simple-Connect"),
@@ -92,22 +65,7 @@ fn nss_client_vs_boring_server_simple() {
 
 #[test]
 fn nss_server_vs_boring_client_simple() {
-    let dirs = read_shim_paths_from_env_vars();
-    let nss_shim_path = &dirs[0];
-    let boring_shim_path = &dirs[1];
-    let boring_runner_path = &dirs[2];
-
-    assert!(Path::new(nss_shim_path).exists(),
-            "nss_bogo_shim not found at {}", nss_shim_path);
-    assert!(Path::new(boring_shim_path).exists(),
-            "bssl_shim not found at {}", boring_shim_path);
-
-    let config = TestConfig {
-        client_shim: boring_shim_path.clone(),
-        server_shim: nss_shim_path.clone(),
-        rootdir: boring_runner_path.clone(),
-        client_writes_first: false,
-    };
+    let config = prepare_config(ConfigType::BsslClient);
 
     let c = TestCase {
         name: String::from("Simple-Connect"),
@@ -124,6 +82,77 @@ fn nss_server_vs_boring_client_simple() {
     assert_eq!(results.failed, 0);
 }
 
+#[test]
+fn nss_server_vs_boring_client_all_test_cases() {
+    let config = prepare_config(ConfigType::BsslClient);
+    
+    let mut f = File::open("cases.json").unwrap();
+    let mut s = String::from("");
+    f.read_to_string(&mut s).expect("Could not read file to string");
+    let cases: TestCases = json::decode(&s).unwrap();
+
+    let mut results = Results::new();
+    for c in cases.cases {
+        run_test_case_meta(&mut results, &config, &c);
+    }
+    assert_eq!(results.failed, 0);
+}
+
+#[test]
+fn bssl_server_vs_nss_client_all_test_cases() {
+    let config = prepare_config(ConfigType::BsslServer);
+    
+    let mut f = File::open("cases.json").unwrap();
+    let mut s = String::from("");
+    f.read_to_string(&mut s).expect("Could not read file to string");
+    let cases: TestCases = json::decode(&s).unwrap();
+
+    let mut results = Results::new();
+    for c in cases.cases {
+        run_test_case_meta(&mut results, &config, &c);
+    }
+    assert_eq!(results.failed, 0);
+}
+
+#[cfg(test)]
+enum ConfigType {
+    NssLoopback,
+    BsslServer,
+    BsslClient,
+}
+
+#[cfg(test)]
+fn prepare_config(conf_type: ConfigType) -> TestConfig {
+    let dirs = read_shim_paths_from_env_vars();
+    let nss_shim_path = &dirs[0];
+    let boring_shim_path = &dirs[1];
+    let boring_runner_path = &dirs[2];
+
+    assert!(Path::new(nss_shim_path).exists(),
+            "nss_bogo_shim not found at {}", nss_shim_path);
+    match conf_type {
+        ConfigType::NssLoopback => {},
+        _ => assert!(Path::new(boring_shim_path).exists(),
+                "bssl_shim not found at {}", boring_shim_path),
+    }
+    
+    TestConfig {
+        client_shim: match conf_type {
+            ConfigType::BsslClient => boring_shim_path.clone(),
+            _ => nss_shim_path.clone(),
+
+        },
+        server_shim: match conf_type {
+            ConfigType::BsslServer => boring_shim_path.clone(),
+            _ => nss_shim_path.clone(),
+        },
+        rootdir: boring_runner_path.clone(),
+        client_writes_first: match conf_type {
+            ConfigType::BsslServer => true,
+            _ => false,
+        }
+    }
+}
 
 //Reads shim paths from Environment, or returns default (../dist/ and ../boringssl/).
 #[cfg(test)]
