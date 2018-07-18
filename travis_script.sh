@@ -23,6 +23,11 @@ mkdir build
 cd build
 cmake ..
 make
+cd $ROOT_DIR
+git clone -q https://github.com/openssl/openssl.git
+cd openssl
+./config enable-external-tests
+make
 cd $TRAVIS_BUILD_DIR
 
 cargo test

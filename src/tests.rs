@@ -217,7 +217,7 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
             assert!(Path::new(ossl_shim_path).exists(),
             "ossl_shim not found at {}", ossl_shim_path),
     }
-    
+
     TestConfig {
         client_shim: match conf_type {
             ConfigType::BsslClient => boring_shim_path.clone(),
