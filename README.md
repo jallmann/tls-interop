@@ -26,6 +26,22 @@ To swap client and server, you need to run it twice.
 
 Cargo Test Instructions
 ============================
-Some of the internal rust test cases run with "cargo test" assume readily built versions of nss and boringssl being available.
+Some of the internal rust test cases run with "cargo test" assume readily built versions of nss and boringssl being available in the parent diretory.
 The NSS shim is expected to be found at "../dist/Debug/bin/nss_bogo_shim".
 The BoringSSL shim is expected to be found at "../boringssl/build/ssl/test/bssl_shim".
+The OpenSSL shim is expected to be found at "../openssl/tests/ossl_shim/ossl_shim".
+
+All three default paths can be overridden by setting the following environment variables:
+NSS_SHIM_PATH = ${NSS_ROOT}/bin/nss_bogo_shim
+BORING_ROOT_DIR = ${BORINGSSL_ROOT}
+OSSL_SHIM_PATH = ${OPENSSL_ROOT}/tests/ossl_shim/ossl_shim
+
+...
+cargo test
+...
+Runs only a set of very basic connection tests between nss and the other two shims. 
+
+...
+cargo test -- --ignored
+...
+Runs all test cases specified in the cases.json file, 

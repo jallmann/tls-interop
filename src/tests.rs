@@ -27,93 +27,65 @@ fn flatten_unittest() {
 
 #[test]
 fn nss_loopback_simple() {
-    let config = prepare_config(ConfigType::NssLoopback);
-
-    let c = TestCase {
-        name: String::from("Simple-Connect"),
-        server_key: None,
-        client_params: None,
-        server_params: None,
-        client: None,
-        server: None,
-    };
-
-    let mut results = Results::new();
-    run_test_case_meta(&mut results, &config, &c);
-
-    assert_eq!(results.failed, 0);
+    inner_test_simple(ConfigType::NssLoopback);
 }
 
 #[test]
 fn nss_client_vs_boring_server_simple() {
-    let config = prepare_config(ConfigType::BsslServer);
-
-    let c = TestCase {
-        name: String::from("Simple-Connect"),
-        server_key: None,
-        client_params: None,
-        server_params: None,
-        client: None,
-        server: None,
-    };
-
-    let mut results = Results::new();
-    run_test_case_meta(&mut results, &config, &c);
-
-    assert_eq!(results.failed, 0);
+    inner_test_simple(ConfigType::BsslServer);
 }
 
 #[test]
 fn nss_client_vs_ossl_server_simple() {
-    let config = prepare_config(ConfigType::OsslServer);
-
-    let c = TestCase {
-        name: String::from("Simple-Connect"),
-        server_key: None,
-        client_params: None,
-        server_params: None,
-        client: None,
-        server: None,
-    };
-
-    let mut results = Results::new();
-    run_test_case_meta(&mut results, &config, &c);
-
-    assert_eq!(results.failed, 0);
+    inner_test_simple(ConfigType::OsslClient);
 }
 
 #[test]
 fn nss_server_vs_boring_client_simple() {
-    let config = prepare_config(ConfigType::BsslClient);
-
-    let c = TestCase {
-        name: String::from("Simple-Connect"),
-        server_key: None,
-        client_params: None,
-        server_params: None,
-        client: None,
-        server: None,
-    };
-
-    let mut results = Results::new();
-    run_test_case_meta(&mut results, &config, &c);
-
-    assert_eq!(results.failed, 0);
+    inner_test_simple(ConfigType::BsslClient);
 }
 
 
 #[test]
 fn nss_server_vs_ossl_client_simple() {
-    let config = prepare_config(ConfigType::OsslClient);
+    inner_test_simple(ConfigType::OsslClient);
+}
 
-    let c = TestCase {
-        name: String::from("Simple-Connect"),
-        server_key: None,
-        client_params: None,
-        server_params: None,
-        client: None,
-        server: None,
-    };
+#[test]
+#[ignore]
+fn nss_loopback_all_test_cases() {
+    inner_test_all_cases(ConfigType::BsslClient)
+}
+
+#[test]
+#[ignore]
+fn nss_server_vs_boring_client_all_test_cases() {
+    inner_test_all_cases(ConfigType::BsslClient)
+}
+
+#[test]
+#[ignore]
+fn boring_server_vs_nss_client_all_test_cases() {
+    inner_test_all_cases(ConfigType::BsslServer)
+}
+
+#[test]
+#[ignore]
+fn ossl_server_vs_nss_client_all_test_cases() {
+    inner_test_all_cases(ConfigType::OsslServer)
+}
+
+#[test]
+#[ignore]
+fn nss_server_vs_ossl_client_all_test_cases() {
+    inner_test_all_cases(ConfigType::OsslClient)
+}
+
+#[cfg(test)]
+fn inner_test_simple(conf_type: ConfigType) {
+    let config = prepare_config(conf_type);
+
+    let c = get_simple_test_case();
 
     let mut results = Results::new();
     run_test_case_meta(&mut results, &config, &c);
@@ -121,10 +93,9 @@ fn nss_server_vs_ossl_client_simple() {
     assert_eq!(results.failed, 0);
 }
 
-#[test]
-#[ignore]
-fn nss_server_vs_boring_client_all_test_cases() {
-    let config = prepare_config(ConfigType::BsslClient);
+#[cfg(test)]
+fn inner_test_all_cases(conf_type: ConfigType) {
+    let config = prepare_config(conf_type);
 
     let mut f = File::open("cases.json").unwrap();
     let mut s = String::from("");
@@ -138,55 +109,16 @@ fn nss_server_vs_boring_client_all_test_cases() {
     assert_eq!(results.failed, 0);
 }
 
-#[test]
-#[ignore]
-fn boring_server_vs_nss_client_all_test_cases() {
-    let config = prepare_config(ConfigType::BsslServer);
-
-    let mut f = File::open("cases.json").unwrap();
-    let mut s = String::from("");
-    f.read_to_string(&mut s).expect("Could not read file to string");
-    let cases: TestCases = json::decode(&s).unwrap();
-
-    let mut results = Results::new();
-    for c in cases.cases {
-        run_test_case_meta(&mut results, &config, &c);
+#[cfg(test)]
+fn get_simple_test_case() -> TestCase {
+    TestCase {
+        name: String::from("Simple-Connect"),
+        server_key: None,
+        client_params: None,
+        server_params: None,
+        client: None,
+        server: None,
     }
-    assert_eq!(results.failed, 0);
-}
-
-#[test]
-#[ignore]
-fn ossl_server_vs_nss_client_all_test_cases() {
-    let config = prepare_config(ConfigType::OsslServer);
-
-    let mut f = File::open("cases.json").unwrap();
-    let mut s = String::from("");
-    f.read_to_string(&mut s).expect("Could not read file to string");
-    let cases: TestCases = json::decode(&s).unwrap();
-
-    let mut results = Results::new();
-    for c in cases.cases {
-        run_test_case_meta(&mut results, &config, &c);
-    }
-    assert_eq!(results.failed, 0);
-}
-
-#[test]
-#[ignore]
-fn nss_server_vs_ossl_client_all_test_cases() {
-    let config = prepare_config(ConfigType::OsslClient);
-
-    let mut f = File::open("cases.json").unwrap();
-    let mut s = String::from("");
-    f.read_to_string(&mut s).expect("Could not read file to string");
-    let cases: TestCases = json::decode(&s).unwrap();
-
-    let mut results = Results::new();
-    for c in cases.cases {
-        run_test_case_meta(&mut results, &config, &c);
-    }
-    assert_eq!(results.failed, 0);
 }
 
 #[cfg(test)]
@@ -200,7 +132,7 @@ enum ConfigType {
 
 #[cfg(test)]
 fn prepare_config(conf_type: ConfigType) -> TestConfig {
-    let dirs = read_shim_paths_from_env_vars();
+    let dirs = get_shim_paths();
     let nss_shim_path = &dirs[0];
     let boring_shim_path = &dirs[1];
     let boring_runner_path = &dirs[2];
@@ -243,9 +175,9 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
     }
 }
 
-//Reads shim paths from Environment, or returns default (../dist/ and ../boringssl/).
+//Reads shim paths from Environment, or returns default (../dist/ and ../boringssl/ and ../openssl/).
 #[cfg(test)]
-fn read_shim_paths_from_env_vars() -> Vec<String> {
+fn get_shim_paths() -> Vec<String> {
     let nss_shim_path = match env::var_os("NSS_SHIM_PATH") {
         Some(val) => val.into_string().unwrap(),
         None => String::from("../dist/Debug/bin/nss_bogo_shim"),

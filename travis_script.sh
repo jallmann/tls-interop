@@ -28,6 +28,7 @@ git clone -q https://github.com/openssl/openssl.git
 cd openssl
 ./config enable-external-tests
 make
+make install
 cd $TRAVIS_BUILD_DIR
 
 cargo test
