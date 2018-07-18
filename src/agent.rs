@@ -9,6 +9,7 @@ use std::process::{Command, ExitStatus};
 use std::thread;
 use test_result::TestResult;
 use config::*;
+use TestConfig;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -29,14 +30,17 @@ impl Agent {
     pub fn new(name: &str,
                path: &str,
                agent: &Option<TestCaseAgent>,
-               args: Vec<String>)
+               args: Vec<String>,
+               conf: &TestConfig)
                -> Result<Agent, i32> {
         // IPv6 listener by default, IPv4 fallback.
-        let addr = "[::1]:0".parse().unwrap();
-        let listener = TcpListener::bind(&addr).or_else(|_| {
-            let addr = "127.0.0.1:0".parse().unwrap();
-            TcpListener::bind(&addr)
-        }).unwrap();
+        let addr6 = "[::1]:0".parse().unwrap();
+        let addr4 = "127.0.0.1:0".parse().unwrap();
+        let listener = match conf.force_ipv4 {
+            false => TcpListener::bind(&addr6).or_else(|_| {
+                TcpListener::bind(&addr4)}).unwrap(),
+            true => TcpListener::bind(&addr4).unwrap(),
+        };
 
         // Start the subprocess.
         let mut command = Command::new(path.to_owned());

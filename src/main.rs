@@ -88,6 +88,7 @@ pub struct TestConfig {
     server_shim: String,
     rootdir: String,
     client_writes_first: bool,
+    force_ipv4: bool,
 }
 
 // The results of the entire test run.
@@ -214,14 +215,14 @@ fn run_test_case_inner(config: &TestConfig,
         false => {server_args.push(String::from("-write-then-read"));},
     }
 
-    let mut server = match Agent::new("server", &config.server_shim, &case.server, server_args) {
+    let mut server = match Agent::new("server", &config.server_shim, &case.server, server_args, config) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
         }
     };
 
-    let mut client = match Agent::new("client", &config.client_shim, &case.client, client_args) {
+    let mut client = match Agent::new("client", &config.client_shim, &case.client, client_args, config) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
@@ -263,6 +264,11 @@ fn main() {
             .help("Client writes after handshake instead of server")
             .takes_value(false)
             .required(false))
+        .arg(Arg::with_name("force-IPv4")
+            .long("force-IPv4")
+            .help("forces IPv4 Sockets even if IPv6 is available")
+            .takes_value(false)
+            .required(false))
         .get_matches();
 
     let config = TestConfig {
@@ -270,6 +276,7 @@ fn main() {
         server_shim: String::from(matches.value_of("server").unwrap()),
         rootdir: String::from(matches.value_of("rootdir").unwrap()),
         client_writes_first: matches.is_present("client-writes-first"),
+        force_ipv4: matches.is_present("force-IPv4"),
     };
 
     let mut f = File::open(matches.value_of("cases").unwrap()).unwrap();
@@ -279,6 +286,7 @@ fn main() {
 
     let mut results = Results::new();
     for c in cases.cases {
+        debug!("Running test case: {:?}", c);
         run_test_case_meta(&mut results, &config, &c);
     }
 
