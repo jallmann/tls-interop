@@ -4,7 +4,7 @@ language: rust
 rust:
   - stable
 env:
-  - LD_LIBRARY_PATH=/home/travis/build/jallmann/dist/Debug/lib
+  - LD_LIBRARY_PATH=/home/travis/build/jallmann/dist/Debug/lib:/home/travis/build/jallmann/openssl
 addons:
   hosts:
     - localhost.localdomain

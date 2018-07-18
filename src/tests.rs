@@ -175,7 +175,8 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
     }
 }
 
-//Reads shim paths from Environment, or returns default (../dist/ and ../boringssl/ and ../openssl/).
+// Reads shim paths from Environment, or returns defaults
+// (../dist/ and ../boringssl/ and ../openssl/).
 #[cfg(test)]
 fn get_shim_paths() -> Vec<String> {
     let nss_shim_path = match env::var_os("NSS_SHIM_PATH") {

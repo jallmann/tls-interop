@@ -33,7 +33,7 @@ impl Agent {
                args: Vec<String>,
                conf: &TestConfig)
                -> Result<Agent, i32> {
-        // IPv6 listener by default, IPv4 fallback.
+        // IPv6 listener by default, IPv4 fallback, unless IPv4 is forced.
         let addr6 = "[::1]:0".parse().unwrap();
         let addr4 = "127.0.0.1:0".parse().unwrap();
         let listener = match conf.force_ipv4 {

@@ -208,21 +208,24 @@ fn run_test_case_inner(config: &TestConfig,
     server_args.push(String::from("-cert-file"));
     server_args.push(config.rootdir.clone() + &key_base + &String::from("_cert.pem"));
 
-    //Decide if client or server should write first after successful handshake.
-    //Only nss_bogo_shim can do -write-then-read. bssl_shim can only be used in the passive role.
+    // Decide if client or server should write first after successful handshake.
+    // Only nss_bogo_shim can do -write-then-read.
+    // bssl_shim and ossl_shim can only be used in the passive role.
     match config.client_writes_first {
         true => {client_args.push(String::from("-write-then-read"));},
         false => {server_args.push(String::from("-write-then-read"));},
     }
 
-    let mut server = match Agent::new("server", &config.server_shim, &case.server, server_args, config) {
+    let mut server = match Agent::new("server", &config.server_shim,
+            &case.server, server_args, config) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
         }
     };
 
-    let mut client = match Agent::new("client", &config.client_shim, &case.client, client_args, config) {
+    let mut client = match Agent::new("client", &config.client_shim,
+            &case.client, client_args, config) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
@@ -266,7 +269,7 @@ fn main() {
             .required(false))
         .arg(Arg::with_name("force-IPv4")
             .long("force-IPv4")
-            .help("forces IPv4 Sockets even if IPv6 is available")
+            .help("Forces IPv4 Sockets even if IPv6 is available")
             .takes_value(false)
             .required(false))
         .get_matches();
