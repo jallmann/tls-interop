@@ -43,10 +43,6 @@ OSSL_SHIM_PATH = ${OPENSSL_ROOT}/tests/ossl_shim/ossl_shim
 ```
 cargo test
 ```
-Runs only a set of very basic connection tests between nss and the other two shims. 
-
-```
-cargo test -- --ignored
-```
-Runs all test cases specified in the cases.json file, in each available combination
-of shims.
+Runs only a set of very basic connection tests between nss and the other two 
+shims and additionally all test cases specified in the cases.json file, in each 
+available combination of shims.

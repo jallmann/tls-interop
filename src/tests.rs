@@ -52,31 +52,26 @@ fn nss_server_vs_ossl_client_simple() {
 }
 
 #[test]
-#[ignore]
 fn nss_loopback_all_test_cases() {
     inner_test_all_cases(ConfigType::BsslClient)
 }
 
 #[test]
-#[ignore]
 fn nss_server_vs_boring_client_all_test_cases() {
     inner_test_all_cases(ConfigType::BsslClient)
 }
 
 #[test]
-#[ignore]
 fn boring_server_vs_nss_client_all_test_cases() {
     inner_test_all_cases(ConfigType::BsslServer)
 }
 
 #[test]
-#[ignore]
 fn ossl_server_vs_nss_client_all_test_cases() {
     inner_test_all_cases(ConfigType::OsslServer)
 }
 
 #[test]
-#[ignore]
 fn nss_server_vs_ossl_client_all_test_cases() {
     inner_test_all_cases(ConfigType::OsslClient)
 }
