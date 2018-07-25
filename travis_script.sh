@@ -1,9 +1,5 @@
 #!/bin/bash
 
-sudo apt-get -qq update
-sudo apt-get install ninja-build -y
-sudo apt-get install zlib1g-dev -y
-
 ROOT_DIR=$TRAVIS_BUILD_DIR/..
 
 cd $ROOT_DIR
