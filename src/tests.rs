@@ -53,7 +53,7 @@ fn nss_server_vs_ossl_client_simple() {
 
 #[test]
 fn nss_loopback_all_test_cases() {
-    inner_test_all_cases(ConfigType::BsslClient)
+    inner_test_all_cases(ConfigType::NssLoopback)
 }
 
 #[test]

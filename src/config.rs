@@ -4,6 +4,7 @@
 pub struct TestCaseAgent {
     pub min_version: Option<u32>,
     pub max_version: Option<u32>,
+    pub ciphers: Option<String>,
     pub flags: Option<Vec<String>>,
 }
 

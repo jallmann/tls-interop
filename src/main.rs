@@ -285,7 +285,7 @@ fn main() {
     let mut f = File::open(matches.value_of("cases").unwrap()).unwrap();
     let mut s = String::from("");
     f.read_to_string(&mut s).expect("Could not read file to string");
-    let cases: TestCases = json::decode(&s).unwrap();
+    let cases: TestCases = json::decode(&s).expect("Malformed JSON config file.");
 
     let mut results = Results::new();
     for c in cases.cases {

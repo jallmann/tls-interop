@@ -54,6 +54,10 @@ impl Agent {
                 command.arg("-max-version");
                 command.arg(min.to_string());
             }
+            if let Some(ref cipher) = a.ciphers {
+                command.arg("-cipher-list");
+                command.arg(cipher.to_string());
+            }
             if let Some(ref flags) = a.flags {
                 for f in flags {
                     command.arg(f);
