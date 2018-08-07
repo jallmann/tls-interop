@@ -10,7 +10,7 @@ use mio::*;
 use mio::tcp::Shutdown;
 use rustc_serialize::json;
 use std::io::prelude::*;
-use std::fs::File;
+use std::fs::*;
 use std::process::exit;
 mod agent;
 mod config;
@@ -131,6 +131,10 @@ impl Results {
             TestResult::Skipped => self.skipped += 1,
             TestResult::Failed => {
                 println!("FAILED: {}", Results::case_name(case, index));
+                match std::fs::read_to_string("stdout_log") {
+                    Ok(s) => println!{"{}", s},
+                    Err(_) => {},
+                }
                 self.failed += 1
             }
         }
@@ -217,7 +221,7 @@ fn run_test_case_inner(config: &TestConfig,
     }
 
     let mut server = match Agent::new("server", &config.server_shim,
-            &case.server, server_args, config) {
+            &case.server, server_args, config.force_ipv4) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
@@ -225,7 +229,7 @@ fn run_test_case_inner(config: &TestConfig,
     };
 
     let mut client = match Agent::new("client", &config.client_shim,
-            &case.client, client_args, config) {
+            &case.client, client_args, config.force_ipv4) {
         Ok(a) => a,
         Err(e) => {
             return TestResult::from_status(e);
@@ -235,6 +239,17 @@ fn run_test_case_inner(config: &TestConfig,
     shuttle(&mut client, &mut server);
 
     TestResult::merge(client.check_status(), server.check_status())
+}
+
+fn cleanup_logfiles() {
+    match std::fs::remove_file("stdout_log") {
+        Ok(_) => {},
+        Err(e) => debug!{"{}", e},
+    }
+    match std::fs::remove_file("stderr_log") {
+        Ok(_) => {},
+        Err(e) => debug!{"{}", e},
+    }
 }
 
 fn main() {
@@ -299,6 +314,7 @@ fn main() {
              results.skipped,
              results.failed);
 
+    cleanup_logfiles();
     if results.failed != 0 {
         exit(1);
     }

@@ -9,7 +9,7 @@ use std::process::{Command, ExitStatus};
 use std::thread;
 use test_result::TestResult;
 use config::*;
-use TestConfig;
+use std::fs::File;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -31,12 +31,12 @@ impl Agent {
                path: &str,
                agent: &Option<TestCaseAgent>,
                args: Vec<String>,
-               conf: &TestConfig)
+               ipv4: bool)
                -> Result<Agent, i32> {
         // IPv6 listener by default, IPv4 fallback, unless IPv4 is forced.
         let addr6 = "[::1]:0".parse().unwrap();
         let addr4 = "127.0.0.1:0".parse().unwrap();
-        let listener = match conf.force_ipv4 {
+        let listener = match ipv4 {
             false => TcpListener::bind(&addr6).or_else(|_| {
                 TcpListener::bind(&addr4)}).unwrap(),
             true => TcpListener::bind(&addr4).unwrap(),
@@ -54,8 +54,8 @@ impl Agent {
                 command.arg("-max-version");
                 command.arg(min.to_string());
             }
-            if let Some(ref cipher) = a.ciphers {
-                command.arg("-cipher-list");
+            if let Some(ref cipher) = a.cipher {
+                command.arg("-cipher");
                 command.arg(cipher.to_string());
             }
             if let Some(ref flags) = a.flags {
@@ -70,11 +70,16 @@ impl Agent {
             command.arg(arg);
         }
 
+        let stderr_log = File::create("stderr_log").unwrap();
+        let stdout_log = File::create("stdout_log").unwrap();
+
         // Add common args.
         command.arg("-port");
         command.arg(listener.local_addr().unwrap().port().to_string());
+        command.stdout(stderr_log);
+        command.stderr(stdout_log);
         debug!("Executing command {:?}", &command);
-        let mut child = command.spawn().unwrap();
+        let mut child = command.spawn().expect("TLS_INTEROP: Failed spawning child process.");
 
         // Listen for connect
         // Create an poll instance
@@ -92,7 +97,7 @@ impl Agent {
             .unwrap();
 
         thread::spawn(move || {
-            let ecode = child.wait().expect("failed waiting for subprocess");
+            let ecode = child.wait().expect("TLS_INTEROP: failed waiting for subprocess");
             txf.send(ecode.code().unwrap_or(-1)).ok();
             txf2.send(ecode.code().unwrap_or(-1)).ok();
         });
@@ -104,7 +109,7 @@ impl Agent {
             SERVER => {
                 let sock = listener.accept();
 
-                debug!("Accepted");
+                debug!("TLS_INTEROP: Accepted");
                 Ok(Agent {
                     name: name.to_owned(),
                     path: path.to_owned(),

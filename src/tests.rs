@@ -86,6 +86,7 @@ fn inner_test_simple(conf_type: ConfigType) {
     run_test_case_meta(&mut results, &config, &c);
 
     assert_eq!(results.failed, 0);
+    cleanup_logfiles();
 }
 
 #[cfg(test)]
@@ -94,7 +95,7 @@ fn inner_test_all_cases(conf_type: ConfigType) {
 
     let mut f = File::open("cases.json").unwrap();
     let mut s = String::from("");
-    f.read_to_string(&mut s).expect("Could not read file to string");
+    f.read_to_string(&mut s).expect("Could not read config file.");
     let cases: TestCases = json::decode(&s).unwrap();
 
     let mut results = Results::new();
@@ -102,6 +103,7 @@ fn inner_test_all_cases(conf_type: ConfigType) {
         run_test_case_meta(&mut results, &config, &c);
     }
     assert_eq!(results.failed, 0);
+    cleanup_logfiles();
 }
 
 #[cfg(test)]
