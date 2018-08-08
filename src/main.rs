@@ -10,7 +10,7 @@ use mio::*;
 use mio::tcp::Shutdown;
 use rustc_serialize::json;
 use std::io::prelude::*;
-use std::fs::*;
+use std::fs;
 use std::process::exit;
 mod agent;
 mod config;
@@ -121,20 +121,43 @@ impl Results {
         }
     }
 
-    fn update(&mut self, case: &TestCase, index: Option<u32>, result: &TestResult) {
+    //fn update(&mut self, case: &TestCase, index: Option<u32>, result: &TestResult) {
+    fn update(&mut self,
+              case: &TestCase,
+              index: Option<u32>,
+              c_output: &std::process::Output,
+              s_output: &std::process::Output) {
         self.ran += 1;
+        let c_status = TestResult::from_status(c_output.status.code().unwrap_or(-1));
+        let s_status = TestResult::from_status(s_output.status.code().unwrap_or(-1));
+        let result = TestResult::merge(c_status, s_status);
+        info!("{}: {}", result.to_string(), Results::case_name(case, index));
 
+        match result {
+            TestResult::OK => self.succeeded += 1,
+            TestResult::Skipped => self.skipped += 1,
+            TestResult::Failed => {
+                println!("\nFAILED: {}\n", Results::case_name(case, index));
+                println!("Client stdout: \n{}", String::from_utf8(c_output.stdout.clone()).unwrap());
+                println!("Client stderr: \n{}", String::from_utf8(c_output.stderr.clone()).unwrap());
+                println!("Server stdout: \n{}", String::from_utf8(s_output.stdout.clone()).unwrap());
+                println!("Server stderr: \n{}", String::from_utf8(s_output.stderr.clone()).unwrap());
+                self.failed += 1
+            }
+        }
+    }
+    fn update_simple(&mut self,
+                     case: &TestCase,
+                     index: Option<u32>,
+                     result: &TestResult) {
+        self.ran += 1;
         info!("{}: {}", result.to_string(), Results::case_name(case, index));
 
         match *result {
             TestResult::OK => self.succeeded += 1,
             TestResult::Skipped => self.skipped += 1,
             TestResult::Failed => {
-                println!("FAILED: {}", Results::case_name(case, index));
-                match std::fs::read_to_string("stdout_log") {
-                    Ok(s) => println!{"{}", s},
-                    Err(_) => {},
-                }
+                println!("\nFAILED: {}\n", Results::case_name(case, index));
                 self.failed += 1
             }
         }
@@ -189,15 +212,17 @@ fn run_test_case(results: &mut Results,
                  extra_client_args: &Vec<String>,
                  extra_server_args: &Vec<String>) {
 
-    let r = run_test_case_inner(config, case, extra_client_args, extra_server_args);
-    results.update(case, index, &r);
+    match run_test_case_inner(config, case, extra_client_args, extra_server_args) {
+        Ok((c, s)) => results.update(case, index, &c, &s),
+        Err(e) => results.update_simple(case, index, &TestResult::from_status(e))
+    }
 }
 
 fn run_test_case_inner(config: &TestConfig,
                        case: &TestCase,
                        extra_client_args: &Vec<String>,
                        extra_server_args: &Vec<String>)
-                       -> TestResult {
+                       -> Result<(std::process::Output, std::process::Output), i32> {
     // Create the server and client args
     let mut server_args = extra_server_args.clone();
     let mut client_args = extra_client_args.clone();
@@ -224,7 +249,7 @@ fn run_test_case_inner(config: &TestConfig,
             &case.server, server_args, config.force_ipv4) {
         Ok(a) => a,
         Err(e) => {
-            return TestResult::from_status(e);
+            return Err(e);
         }
     };
 
@@ -232,24 +257,14 @@ fn run_test_case_inner(config: &TestConfig,
             &case.client, client_args, config.force_ipv4) {
         Ok(a) => a,
         Err(e) => {
-            return TestResult::from_status(e);
+            return Err(e);
         }
     };
 
     shuttle(&mut client, &mut server);
-
-    TestResult::merge(client.check_status(), server.check_status())
-}
-
-fn cleanup_logfiles() {
-    match std::fs::remove_file("stdout_log") {
-        Ok(_) => {},
-        Err(e) => debug!{"{}", e},
-    }
-    match std::fs::remove_file("stderr_log") {
-        Ok(_) => {},
-        Err(e) => debug!{"{}", e},
-    }
+    let c_output = client.check_status();
+    let s_output = server.check_status();
+    Ok((c_output, s_output))
 }
 
 fn main() {
@@ -297,7 +312,7 @@ fn main() {
         force_ipv4: matches.is_present("force-IPv4"),
     };
 
-    let mut f = File::open(matches.value_of("cases").unwrap()).unwrap();
+    let mut f = fs::File::open(matches.value_of("cases").unwrap()).unwrap();
     let mut s = String::from("");
     f.read_to_string(&mut s).expect("Could not read file to string");
     let cases: TestCases = json::decode(&s).expect("Malformed JSON config file.");
@@ -314,7 +329,6 @@ fn main() {
              results.skipped,
              results.failed);
 
-    cleanup_logfiles();
     if results.failed != 0 {
         exit(1);
     }

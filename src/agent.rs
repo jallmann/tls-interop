@@ -5,11 +5,9 @@ use mio::*;
 use mio_extras::channel;
 use mio_extras::channel::Receiver;
 use mio::tcp::{TcpListener, TcpStream};
-use std::process::{Command, ExitStatus};
+use std::process::{Command, ExitStatus, Stdio, Output};
 use std::thread;
-use test_result::TestResult;
 use config::*;
-use std::fs::File;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -20,7 +18,7 @@ pub struct Agent {
     path: String,
     args: Vec<String>,
     pub socket: TcpStream,
-    child: Receiver<i32>,
+    child: Receiver<Output>,
     pub alive: bool,
     exit_value: Option<ExitStatus>,
 }
@@ -70,16 +68,12 @@ impl Agent {
             command.arg(arg);
         }
 
-        let stderr_log = File::create("stderr_log").unwrap();
-        let stdout_log = File::create("stdout_log").unwrap();
-
         // Add common args.
         command.arg("-port");
         command.arg(listener.local_addr().unwrap().port().to_string());
-        command.stdout(stderr_log);
-        command.stderr(stdout_log);
+        command.stdout(Stdio::piped()).stderr(Stdio::piped());
         debug!("Executing command {:?}", &command);
-        let mut child = command.spawn().expect("TLS_INTEROP: Failed spawning child process.");
+        let child = command.spawn().expect("Failed spawning child process.");
 
         // Listen for connect
         // Create an poll instance
@@ -90,16 +84,17 @@ impl Agent {
 
         // This is gross, but we can't reregister channels.
         // https://github.com/carllerche/mio/issues/506
-        let (txf, rxf) = channel::channel::<i32>();
-        let (txf2, rxf2) = channel::channel::<i32>();
+        let (txf, rxf) = channel::channel::<Output>();
+        let (txf2, rxf2) = channel::channel::<Output>();
 
         poll.register(&rxf, STATUS, Ready::readable(), PollOpt::level())
             .unwrap();
 
         thread::spawn(move || {
-            let ecode = child.wait().expect("TLS_INTEROP: failed waiting for subprocess");
-            txf.send(ecode.code().unwrap_or(-1)).ok();
-            txf2.send(ecode.code().unwrap_or(-1)).ok();
+            let output = child.wait_with_output().expect("Failed waiting for subprocess");
+
+            txf.send(output.clone()).ok();
+            txf2.send(output.clone()).ok();
         });
 
         poll.poll(&mut events, None).unwrap();
@@ -109,7 +104,7 @@ impl Agent {
             SERVER => {
                 let sock = listener.accept();
 
-                debug!("TLS_INTEROP: Accepted");
+                debug!("Accepted");
                 Ok(Agent {
                     name: name.to_owned(),
                     path: path.to_owned(),
@@ -121,16 +116,17 @@ impl Agent {
                 })
             }
             STATUS => {
-                let err = rxf.try_recv().unwrap();
-                info!("Failed {}", err);
-                Err(err)
+                let output = rxf.try_recv().unwrap();
+                info!("Failed {}", output.status);
+                //TODO: Potential Error output is lost here. Should be fixed. 
+                Err(output.status.code().unwrap())
             }
             _ => Err(-1)
         }
     }
 
     // Read the status from the subthread.
-    pub fn check_status(&self) -> TestResult {
+    pub fn check_status(&self) -> Output {
         debug!("Getting status for {}", self.name);
         // try_recv() is nonblocking, so poll until it's readable.
         let poll = Poll::new().unwrap();
@@ -139,8 +135,9 @@ impl Agent {
         let mut events = Events::with_capacity(1);
         poll.poll(&mut events, None).unwrap();
 
-        let code = self.child.try_recv().unwrap();
+        let output = self.child.try_recv().unwrap();
+        let code = output.status.code().unwrap_or(-1);
         debug!("Exit status for {} = {}", self.name, code);
-        TestResult::from_status(code)
+        output.clone()
     }
 }
