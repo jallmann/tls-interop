@@ -138,10 +138,10 @@ impl Results {
             TestResult::Skipped => self.skipped += 1,
             TestResult::Failed => {
                 println!("\nFAILED: {}\n", Results::case_name(case, index));
-                println!("Client stdout: \n{}", String::from_utf8(c_output.stdout.clone()).unwrap());
-                println!("Client stderr: \n{}", String::from_utf8(c_output.stderr.clone()).unwrap());
-                println!("Server stdout: \n{}", String::from_utf8(s_output.stdout.clone()).unwrap());
-                println!("Server stderr: \n{}", String::from_utf8(s_output.stderr.clone()).unwrap());
+                //println!("Client stdout: \n{}", String::from_utf8(c_output.stdout.clone()).unwrap());
+                println!("Client: \n{}", String::from_utf8(c_output.stderr.clone()).unwrap());
+                //rintln!("Server stdout: \n{}", String::from_utf8(s_output.stdout.clone()).unwrap());
+                println!("Server: \n{}", String::from_utf8(s_output.stderr.clone()).unwrap());
                 self.failed += 1
             }
         }

@@ -1,5 +1,6 @@
 extern crate mio;
 extern crate mio_extras;
+extern crate rustc_serialize;
 
 use mio::*;
 use mio_extras::channel;
@@ -23,6 +24,10 @@ pub struct Agent {
     exit_value: Option<ExitStatus>,
 }
 
+fn cipher_string_to_ossl(input: &str) -> String{
+    String::from(input).replace("TLS_", "").replace("AES_", "AES").replace("_", "-")
+        .replace("-WITH", "")
+}
 
 impl Agent {
     pub fn new(name: &str,
@@ -40,8 +45,10 @@ impl Agent {
             true => TcpListener::bind(&addr4).unwrap(),
         };
 
+        let ossl_cipher_format = path.contains("bssl_shim") || path.contains("ossl_shim");
         // Start the subprocess.
         let mut command = Command::new(path.to_owned());
+
         // Process parameters.
         if let Some(ref a) = *agent {
             if let Some(ref min) = a.min_version {
@@ -54,7 +61,10 @@ impl Agent {
             }
             if let Some(ref cipher) = a.cipher {
                 command.arg("-cipher");
-                command.arg(cipher.to_string());
+                match ossl_cipher_format {
+                    true => command.arg(cipher_string_to_ossl(&cipher.to_string())),
+                    false => command.arg(cipher.to_string())
+                };
             }
             if let Some(ref flags) = a.flags {
                 for f in flags {
@@ -118,7 +128,7 @@ impl Agent {
             STATUS => {
                 let output = rxf.try_recv().unwrap();
                 info!("Failed {}", output.status);
-                //TODO: Potential Error output is lost here. Should be fixed. 
+                //TODO: Potential Error output is lost here. Should be fixed.
                 Err(output.status.code().unwrap())
             }
             _ => Err(-1)
