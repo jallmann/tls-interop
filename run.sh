@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 BASE_DIR=$(cd $(dirname $0); pwd -P)
 CASE_FILE=$2
-export RUST_LOG=debug
+#export RUST_LOG=debug
 
 run_boring_server() {
   cargo run -- \

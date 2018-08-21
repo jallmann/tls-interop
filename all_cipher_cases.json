@@ -41,7 +41,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_4",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -68,7 +68,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_6",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -95,7 +95,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_8",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -122,7 +122,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_10",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -136,7 +136,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_11",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -163,7 +163,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_13",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -203,7 +203,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_16",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -230,7 +230,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_18",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -257,7 +257,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_20",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -544,7 +544,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_42",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -571,7 +571,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_44",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -598,7 +598,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_46",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -625,7 +625,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_48",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -847,7 +847,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_65",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -887,7 +887,7 @@
       },
       {
           "name" : "Connect-Compatible_Ciphers_68",
-          "server_key" : "ecdsa_p521",
+          "server_key" : "ecdsa_p256",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
