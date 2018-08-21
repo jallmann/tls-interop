@@ -51,7 +51,7 @@
         },
         {
             "name" : "Connect-Compatible_Ciphers_4",
-            "server_key" : "ecdsa_p521",
+            "server_key" : "ecdsa_p256",
             "client" : {
                 "min_version" : 770,
                 "max_version" : 771,

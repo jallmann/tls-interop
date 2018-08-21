@@ -1,9 +1,9 @@
 #[cfg(test)]
 use super::*;
 #[cfg(test)]
-use std::path::Path;
-#[cfg(test)]
 use std::env;
+#[cfg(test)]
+use std::path::Path;
 
 // Test the flattener
 #[test]
@@ -44,7 +44,6 @@ fn nss_client_vs_ossl_server_simple() {
 fn nss_server_vs_boring_client_simple() {
     inner_test_simple(ConfigType::BsslClient);
 }
-
 
 #[test]
 fn nss_server_vs_ossl_client_simple() {
@@ -94,7 +93,8 @@ fn inner_test_all_cases(conf_type: ConfigType) {
 
     let mut f = fs::File::open("cases.json").unwrap();
     let mut s = String::from("");
-    f.read_to_string(&mut s).expect("Could not read config file.");
+    f.read_to_string(&mut s)
+        .expect("Could not read config file.");
     let cases: TestCases = json::decode(&s).unwrap();
 
     let mut results = Results::new();
@@ -122,7 +122,7 @@ enum ConfigType {
     BsslServer,
     BsslClient,
     OsslServer,
-    OsslClient
+    OsslClient,
 }
 
 #[cfg(test)]
@@ -133,16 +133,23 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
     let boring_runner_path = &dirs[2];
     let ossl_shim_path = &dirs[3];
 
-    assert!(Path::new(nss_shim_path).exists(),
-            "nss_bogo_shim not found at {}", nss_shim_path);
+    assert!(
+        Path::new(nss_shim_path).exists(),
+        "nss_bogo_shim not found at {}",
+        nss_shim_path
+    );
     match conf_type {
-        ConfigType::NssLoopback => {},
-        ConfigType::BsslServer | ConfigType::BsslClient =>
-            assert!(Path::new(boring_shim_path).exists(),
-            "bssl_shim not found at {}", boring_shim_path),
-        ConfigType::OsslServer | ConfigType::OsslClient =>
-            assert!(Path::new(ossl_shim_path).exists(),
-            "ossl_shim not found at {}", ossl_shim_path),
+        ConfigType::NssLoopback => {}
+        ConfigType::BsslServer | ConfigType::BsslClient => assert!(
+            Path::new(boring_shim_path).exists(),
+            "bssl_shim not found at {}",
+            boring_shim_path
+        ),
+        ConfigType::OsslServer | ConfigType::OsslClient => assert!(
+            Path::new(ossl_shim_path).exists(),
+            "ossl_shim not found at {}",
+            ossl_shim_path
+        ),
     }
 
     TestConfig {
@@ -150,7 +157,6 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
             ConfigType::BsslClient => boring_shim_path.clone(),
             ConfigType::OsslClient => ossl_shim_path.clone(),
             _ => nss_shim_path.clone(),
-
         },
         server_shim: match conf_type {
             ConfigType::BsslServer => boring_shim_path.clone(),
@@ -166,7 +172,7 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
         force_ipv4: match conf_type {
             ConfigType::OsslServer | ConfigType::OsslClient => true,
             _ => false,
-        }
+        },
     }
 }
 
@@ -189,5 +195,10 @@ fn get_shim_paths() -> Vec<String> {
         None => String::from("../openssl/test/ossl_shim/ossl_shim"),
     };
 
-    vec![nss_shim_path, boring_shim_path, boring_runner_path, ossl_shim_path]
+    vec![
+        nss_shim_path,
+        boring_shim_path,
+        boring_runner_path,
+        ossl_shim_path,
+    ]
 }

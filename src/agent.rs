@@ -2,13 +2,13 @@ extern crate mio;
 extern crate mio_extras;
 extern crate rustc_serialize;
 
+use config::*;
+use mio::tcp::{TcpListener, TcpStream};
 use mio::*;
 use mio_extras::channel;
 use mio_extras::channel::Receiver;
-use mio::tcp::{TcpListener, TcpStream};
-use std::process::{Command, ExitStatus, Stdio, Output};
+use std::process::{Command, ExitStatus, Output, Stdio};
 use std::thread;
-use config::*;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -24,24 +24,29 @@ pub struct Agent {
     exit_value: Option<ExitStatus>,
 }
 
-fn cipher_string_to_ossl(input: &str) -> String{
-    String::from(input).replace("TLS_", "").replace("AES_", "AES").replace("_", "-")
+fn cipher_string_to_ossl(input: &str) -> String {
+    String::from(input)
+        .replace("TLS_", "")
+        .replace("AES_", "AES")
+        .replace("_", "-")
         .replace("-WITH", "")
 }
 
 impl Agent {
-    pub fn new(name: &str,
-               path: &str,
-               agent: &Option<TestCaseAgent>,
-               args: Vec<String>,
-               ipv4: bool)
-               -> Result<Agent, i32> {
+    pub fn new(
+        name: &str,
+        path: &str,
+        agent: &Option<TestCaseAgent>,
+        args: Vec<String>,
+        ipv4: bool,
+    ) -> Result<Agent, i32> {
         // IPv6 listener by default, IPv4 fallback, unless IPv4 is forced.
         let addr6 = "[::1]:0".parse().unwrap();
         let addr4 = "127.0.0.1:0".parse().unwrap();
         let listener = match ipv4 {
-            false => TcpListener::bind(&addr6).or_else(|_| {
-                TcpListener::bind(&addr4)}).unwrap(),
+            false => TcpListener::bind(&addr6)
+                .or_else(|_| TcpListener::bind(&addr4))
+                .unwrap(),
             true => TcpListener::bind(&addr4).unwrap(),
         };
 
@@ -60,10 +65,13 @@ impl Agent {
                 command.arg(min.to_string());
             }
             if let Some(ref cipher) = a.cipher {
-                command.arg("-cipher");
+                match ossl_cipher_format {
+                    true => command.arg("-cipher"),
+                    false => command.arg("-nss-cipher"),
+                };
                 match ossl_cipher_format {
                     true => command.arg(cipher_string_to_ossl(&cipher.to_string())),
-                    false => command.arg(cipher.to_string())
+                    false => command.arg(cipher.to_string()),
                 };
             }
             if let Some(ref flags) = a.flags {
@@ -101,7 +109,9 @@ impl Agent {
             .unwrap();
 
         thread::spawn(move || {
-            let output = child.wait_with_output().expect("Failed waiting for subprocess");
+            let output = child
+                .wait_with_output()
+                .expect("Failed waiting for subprocess");
 
             txf.send(output.clone()).ok();
             txf2.send(output.clone()).ok();
@@ -128,10 +138,13 @@ impl Agent {
             STATUS => {
                 let output = rxf.try_recv().unwrap();
                 info!("Failed {}", output.status);
-                //TODO: Potential Error output is lost here. Should be fixed.
+                println!(
+                    "Stderr: \n{}",
+                    String::from_utf8(output.stderr.clone()).unwrap()
+                );
                 Err(output.status.code().unwrap())
             }
-            _ => Err(-1)
+            _ => Err(-1),
         }
     }
 
