@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 BASE_DIR=$(cd $(dirname $0); pwd -P)
-CASE_FILE=$2
-#export RUST_LOG=debug
+CASE_FILE="cases.json"
+MODE=""
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        -v) export RUST_LOG=debug ;;
+        -m) MODE="$2"; shift ;;
+        -c) CASE_FILE="$2"; shift;;
+        *) echo "Error: Unknown argument."; exit 2 ;;
+    esac
+    shift
+done
 
 run_boring_server() {
   cargo run -- \
@@ -47,7 +57,7 @@ run_loopback() {
   --test-cases $BASE_DIR/$CASE_FILE
 }
 
-case "$1" in
+case "$MODE" in
   "boring_server")
       run_boring_server
       ;;
@@ -64,6 +74,6 @@ case "$1" in
       run_loopback
       ;;
   *)
-    echo "command not found"
+    echo "No valid test mode specified."
     ;;
 esac
