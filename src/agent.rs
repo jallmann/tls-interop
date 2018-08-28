@@ -28,8 +28,9 @@ fn cipher_string_to_ossl(input: &str) -> String {
     String::from(input)
         .replace("TLS_", "")
         .replace("AES_", "AES")
+        .replace("_WITH", "")
         .replace("_", "-")
-        .replace("-WITH", "")
+        //.replace("-SHA256", "")
 }
 
 impl Agent {
@@ -70,8 +71,8 @@ impl Agent {
                     false => command.arg("-nss-cipher"),
                 };
                 match ossl_cipher_format {
-                    true => command.arg(cipher_string_to_ossl(&cipher.to_string())),
-                    false => command.arg(cipher.to_string()),
+                    true => command.arg(cipher.to_string().split(";").collect::<Vec<&str>>().get(1).unwrap()),
+                    false => command.arg(cipher.to_string().split(";").collect::<Vec<&str>>().get(0).unwrap()),
                 };
             }
             if let Some(ref flags) = a.flags {

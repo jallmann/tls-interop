@@ -1,0 +1,531 @@
+{
+    "cases" : [
+      {
+          "name" : "Connect-Compatible_Ciphers_1",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_AES_128_GCM_SHA256;AES128-GCM-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_AES_128_GCM_SHA256;AES128-GCM-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_2",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;CHACHA20-POLY1305-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;CHACHA20-POLY1305-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_3",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_AES_256_GCM_SHA384;AES256-GCM-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 772,
+              "cipher" : "TLS_AES_256_GCM_SHA384;AES256-GCM-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_4",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256;ECDHE-ECDSA-AES128-GCM-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256;ECDHE-ECDSA-AES128-GCM-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_5",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;ECDHE-RSA-AES128-GCM-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;ECDHE-RSA-AES128-GCM-SHA256"
+          }
+      },{
+          "name" : "Connect-Compatible_Ciphers_6",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256;ECDHE-ECDSA-CHACHA20-POLY1305"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256;ECDHE-ECDSA-CHACHA20-POLY1305"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_7",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256;ECDHE-RSA-CHACHA20-POLY1305"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256;ECDHE-RSA-CHACHA20-POLY1305"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_8",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384;ECDHE-ECDSA-AES256-GCM-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384;ECDHE-ECDSA-AES256-GCM-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_9",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384;ECDHE-RSA-AES256-GCM-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384;ECDHE-RSA-AES256-GCM-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_10",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA;ECDHE-ECDSA-AES256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA;ECDHE-ECDSA-AES256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_11",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA;ECDHE-ECDSA-AES128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA;ECDHE-ECDSA-AES128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_12",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ECDHE-RSA-AES128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;ECDHE-RSA-AES128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_13",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256;ECDHE-ECDSA-AES128-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256;ECDHE-ECDSA-AES128-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_14",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256;ECDHE-RSA-AES128-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256;ECDHE-RSA-AES128-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_15",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA;ECDHE-RSA-AES256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA;ECDHE-RSA-AES256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_16",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384;ECDHE-ECDSA-AES256-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384;ECDHE-ECDSA-AES256-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_17",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384;ECDHE-RSA-AES256-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384;ECDHE-RSA-AES256-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_22",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256;DHE-RSA-AES128-GCM-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256;DHE-RSA-AES128-GCM-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_23",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256;DHE-RSA-CHACHA20-POLY1305"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256;DHE-RSA-CHACHA20-POLY1305"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_25",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384;DHE-RSA-AES256-GCM-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384;DHE-RSA-AES256-GCM-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_27",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_CBC_SHA;DHE-RSA-AES128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_CBC_SHA;DHE-RSA-AES128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_29",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256;DHE-RSA-AES128-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256;DHE-RSA-AES128-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_31",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA;DHE-RSA-CAMELLIA128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA;DHE-RSA-CAMELLIA128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_33",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_CBC_SHA;DHE-RSA-AES256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_CBC_SHA;DHE-RSA-AES256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_35",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256;DHE-RSA-AES256-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256;DHE-RSA-AES256-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_37",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA;DHE-RSA-CAMELLIA256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA;DHE-RSA-CAMELLIA256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_50",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_GCM_SHA256;AES128-GCM-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_GCM_SHA256;AES128-GCM-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_51",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_GCM_SHA384;AES256-GCM-SHA384"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_GCM_SHA384;AES256-GCM-SHA384"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_52",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_CBC_SHA;AES128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_CBC_SHA;AES128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_53",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_CBC_SHA256;AES128-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_128_CBC_SHA256;AES128-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_54",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_CAMELLIA_128_CBC_SHA;CAMELLIA128-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_CAMELLIA_128_CBC_SHA;CAMELLIA128-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_55",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_CBC_SHA;AES256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_CBC_SHA;AES256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_56",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_CBC_SHA256;AES256-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_AES_256_CBC_SHA256;AES256-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_57",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_CAMELLIA_256_CBC_SHA;CAMELLIA256-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_CAMELLIA_256_CBC_SHA;CAMELLIA256-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_58",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_SEED_CBC_SHA;SEED-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_SEED_CBC_SHA;SEED-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_65",
+          "server_key" : "ecdsa_p256",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_NULL_SHA;ECDHE-ECDSA-NULL-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_ECDSA_WITH_NULL_SHA;ECDHE-ECDSA-NULL-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_66",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_NULL_SHA;ECDHE-RSA-NULL-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_ECDHE_RSA_WITH_NULL_SHA;ECDHE-RSA-NULL-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_69",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_SHA;NULL-SHA"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_SHA;NULL-SHA"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_70",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_SHA256;NULL-SHA256"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_SHA256;NULL-SHA256"
+          }
+      },
+      {
+          "name" : "Connect-Compatible_Ciphers_71",
+          "client" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_MD5;NULL-MD5"
+          },
+          "server" : {
+              "min_version" : 770,
+              "max_version" : 771,
+              "cipher" : "TLS_RSA_WITH_NULL_MD5;NULL-MD5"
+          }
+      }
+    ]
+}
