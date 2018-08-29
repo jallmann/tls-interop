@@ -65,7 +65,8 @@
               "max_version" : 771,
               "cipher" : "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;ECDHE-RSA-AES128-GCM-SHA256"
           }
-      },{
+      },
+      {
           "name" : "Connect-Compatible_Ciphers_6",
           "server_key" : "ecdsa_p256",
           "client" : {

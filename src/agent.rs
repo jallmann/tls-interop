@@ -24,15 +24,6 @@ pub struct Agent {
     exit_value: Option<ExitStatus>,
 }
 
-fn cipher_string_to_ossl(input: &str) -> String {
-    String::from(input)
-        .replace("TLS_", "")
-        .replace("AES_", "AES")
-        .replace("_WITH", "")
-        .replace("_", "-")
-        //.replace("-SHA256", "")
-}
-
 impl Agent {
     pub fn new(
         name: &str,
