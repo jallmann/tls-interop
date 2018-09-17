@@ -5,12 +5,12 @@
           "client" : {
               "min_version" : 770,
               "max_version" : 772,
-              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;AEAD-CHACHA20-POLY1305-SHA256"
+              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;CHACHA20-POLY1305-SHA256"
           },
           "server" : {
               "min_version" : 770,
               "max_version" : 772,
-              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;AEAD-CHACHA20-POLY1305-SHA256"
+              "cipher" : "TLS_CHACHA20_POLY1305_SHA256;CHACHA20-POLY1305-SHA256"
           }
       }
     ]
