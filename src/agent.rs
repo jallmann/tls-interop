@@ -66,12 +66,8 @@ impl Agent {
             }
             if let Some(ref cipher) = a.cipher {
                 match ossl_cipher_format {
-                    true => command.arg("-cipher"),
-                    false => command.arg("-nss-cipher"),
-                };
-                match ossl_cipher_format {
-                    true => command.arg(cipher_string_to_ossl(&cipher.to_string())),
-                    false => command.arg(cipher.to_string()),
+                    true => command.arg("-cipher").arg(cipher_string_to_ossl(&cipher.to_string())),
+                    false => command.arg("-nss-cipher").arg(cipher.to_string()),
                 };
             }
             if let Some(ref flags) = a.flags {
