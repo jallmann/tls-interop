@@ -24,19 +24,19 @@ SHIM_ARRAY=($NSS_SHIM $BSSL_SHIM $OSSL_SHIM)
 run_shim_pair() {
   # If NSS acts as the client, interop needs this argument.
   # It would become obsolete if bssl and ossl could actively initiate
-  # communication after the handshake. 
+  # communication after the handshake.
   CLIENT_WRITES=""
   if [[ $1 = *"nss_bogo_shim"* ]]; then
     CLIENT_WRITES="--client-writes-first"
   fi
-  
+
   # The ossl_shim is currently not properly IPv6 capable, which is why interop
   # needs this argument when ossl_shim is involved in the test case.
   IP4=""
   if [[ $1 = *"ossl"* ]] || [[ $2 = *"ossl"* ]] ; then
     IP4="--force-IPv4"
   fi
-  
+
   cargo run -- \
   --client $1 \
   --server $2 \
@@ -47,21 +47,21 @@ run_shim_pair() {
 }
 
 case $MODE in
-  "all")  
+  "all")
       for i in ${SHIM_ARRAY[@]}
         do
           for j in ${SHIM_ARRAY[@]}
           do
             # Currently at least one nss shim needs to be involved in a test
             # case because neither bssl_shim nor ossl_shim can actively
-            # initiate the communication after a successful handshake.  
+            # initiate the communication after a successful handshake.
             if [[ $i = *"nss_bogo_shim"* ]] || [[ $j = *"nss_bogo_shim"* ]] ; then
               run_shim_pair $i $j
             fi
           done
         done
       ;;
-      
+
   # Hardcoded cases for all currently working combinations of shuims are kept
   # for conveniently running certain shim pairs against each other during
   # development.

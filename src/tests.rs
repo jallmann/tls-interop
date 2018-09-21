@@ -26,53 +26,31 @@ fn flatten_unittest() {
 }
 
 #[test]
-fn nss_loopback_simple() {
-    inner_test_simple(ConfigType::NssLoopback);
+fn test_simple_connection() {
+    let configs = vec![
+        ConfigType::NssLoopback,
+        ConfigType::BsslServer,
+        ConfigType::OsslServer,
+        ConfigType::BsslClient,
+        ConfigType::OsslClient
+    ];
+    for config in configs {
+        inner_test_simple(config);
+    }
 }
 
 #[test]
-fn nss_client_vs_boring_server_simple() {
-    inner_test_simple(ConfigType::BsslServer);
-}
-
-#[test]
-fn nss_client_vs_ossl_server_simple() {
-    inner_test_simple(ConfigType::OsslClient);
-}
-
-#[test]
-fn nss_server_vs_boring_client_simple() {
-    inner_test_simple(ConfigType::BsslClient);
-}
-
-#[test]
-fn nss_server_vs_ossl_client_simple() {
-    inner_test_simple(ConfigType::OsslClient);
-}
-
-#[test]
-fn nss_loopback_all_test_cases() {
-    inner_test_all_cases(ConfigType::NssLoopback)
-}
-
-#[test]
-fn nss_server_vs_boring_client_all_test_cases() {
-    inner_test_all_cases(ConfigType::BsslClient)
-}
-
-#[test]
-fn boring_server_vs_nss_client_all_test_cases() {
-    inner_test_all_cases(ConfigType::BsslServer)
-}
-
-#[test]
-fn ossl_server_vs_nss_client_all_test_cases() {
-    inner_test_all_cases(ConfigType::OsslServer)
-}
-
-#[test]
-fn nss_server_vs_ossl_client_all_test_cases() {
-    inner_test_all_cases(ConfigType::OsslClient)
+fn test_all_cases() {
+    let configs = vec![
+        ConfigType::NssLoopback,
+        ConfigType::BsslServer,
+        ConfigType::OsslServer,
+        ConfigType::BsslClient,
+        ConfigType::OsslClient
+    ];
+    for config in configs {
+        inner_test_all_cases(config);
+    }
 }
 
 #[cfg(test)]
