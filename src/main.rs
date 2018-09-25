@@ -199,20 +199,29 @@ fn make_params(params: &Option<TestCaseParams>) -> Vec<Vec<String>> {
 }
 
 fn run_test_case_meta(results: &mut Results, config: &TestConfig, case: &TestCase) {
-    if case.client_params.is_none() && case.server_params.is_none() {
+    if case.client_params.is_none() 
+        && case.server_params.is_none() 
+        && case.ciphers.is_none() {
         let dummy = vec![];
         run_test_case(results, config, case, None, &dummy, &dummy);
     } else {
         let client_args = make_params(&case.client_params);
         let server_args = make_params(&case.server_params);
+        let ciphers = case.ciphers.clone();
         let mut index: u32 = 0;
-
-        for c in &client_args {
-            for s in &server_args {
-                run_test_case(results, config, case, Some(index), c, s);
-                index += 1;
+        
+        for cipher in ciphers {
+            print!("{:?}", cipher);
+            // case.server.cipher = cipher;
+            // case.client.cipher = cipher;
+            for c in &client_args {
+                for s in &server_args {
+                    run_test_case(results, config, case, Some(index), c, s);
+                    index += 1;
+                }
             }
         }
+        
     }
 }
 

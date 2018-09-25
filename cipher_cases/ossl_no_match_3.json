@@ -27,7 +27,7 @@
           }
       },
       {
-          "name" : "Connect-Compatible_Ciphers_64;NONE",
+          "name" : "Connect-Compatible_Ciphers_64",
           "client" : {
               "min_version" : 770,
               "max_version" : 771,
@@ -36,7 +36,7 @@
           "server" : {
               "min_version" : 770,
               "max_version" : 771,
-              "cipher" : "TLS_RSA_WITH_DES_CBC_SHA"
+              "cipher" : "TLS_RSA_WITH_DES_CBC_SHA;NONE"
           }
       }
     ]

@@ -21,6 +21,7 @@ pub struct TestCase {
     pub server_params: Option<TestCaseParams>,
     pub client: Option<TestCaseAgent>,
     pub server: Option<TestCaseAgent>,
+    pub ciphers: Option<Vec<String>>,
 }
 
 #[derive(RustcDecodable, RustcEncodable, Debug)]
