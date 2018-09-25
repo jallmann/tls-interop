@@ -5,3 +5,4 @@ Cargo.lock
 *.out
 /docker
 temp
+cipher_cases
