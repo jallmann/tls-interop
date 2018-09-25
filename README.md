@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/jallmann/tls-interop.svg?branch=master)](https://travis-ci.org/jallmann/tls-interop)
+[![Build Status](https://travis-ci.org/mozilla/tls-interop.svg?branch=master)](https://travis-ci.org/mozilla/tls-interop)
 
 Primitive TLS interop Harness
 =============================
@@ -27,20 +27,20 @@ tls_interop --client ${NSS_ROOT}/dist/Darwin15.6.0_cc_64_DBG.OBJ/bin/nss_bogo_sh
 To swap client and server, you need to run it twice.
 
 The run.sh script makes it easier to run a certain configuration of shims and 
-test cases, provided the shims for nss, boringssl and openssl executables are 
-can be found in the default locations as specified under Cargo Test Instructions.
+test cases, provided the shims for nss, boringssl and openssl executables can
+be found in the default locations as specified under Cargo Test Instructions.
 
 Example:
 
 ```
-./run.sh -m loopback -c cipher_cases/all_cipher_cases_71.json -v
+./run.sh -m loopback -c cases.json -v
 ```
 
 -v is for verbose output.
 -m is for mode, the configuration of shims used as client and server.
 -c is for case file, the file with test cases. 
 
-All available modes are: loopback, boring_client, boring_server, ossl_client, ossl_server.
+All available modes are: all, loopback, boring_client, boring_server, ossl_client, ossl_server.
 
 
 Cargo Test Instructions

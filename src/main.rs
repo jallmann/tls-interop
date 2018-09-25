@@ -365,7 +365,7 @@ fn main() {
                 .required(false),
         )
         .get_matches();
-
+            
     let config = TestConfig {
         client_shim: String::from(matches.value_of("client").unwrap()),
         server_shim: String::from(matches.value_of("server").unwrap()),
