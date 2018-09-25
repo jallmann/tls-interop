@@ -9,6 +9,9 @@ use mio_extras::channel;
 use mio_extras::channel::Receiver;
 use std::process::{Command, ExitStatus, Output, Stdio};
 use std::thread;
+use std::fs;
+use std::io::prelude::*;
+use rustc_serialize::json;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -22,14 +25,6 @@ pub struct Agent {
     child: Receiver<Output>,
     pub alive: bool,
     exit_value: Option<ExitStatus>,
-}
-
-fn cipher_string_to_ossl(input: &str) -> String {
-    String::from(input)
-        .replace("TLS_", "")
-        .replace("AES_", "AES")
-        .replace("_", "-")
-        .replace("-WITH", "")
 }
 
 impl Agent {
@@ -49,7 +44,7 @@ impl Agent {
                 .unwrap(),
             true => TcpListener::bind(&addr4).unwrap(),
         };
-
+        
         let ossl_cipher_format = path.contains("bssl_shim") || path.contains("ossl_shim");
         // Start the subprocess.
         let mut command = Command::new(path.to_owned());
@@ -65,9 +60,12 @@ impl Agent {
                 command.arg(min.to_string());
             }
             if let Some(ref cipher) = a.cipher {
+                if check_cipher_blacklist(cipher, path) {
+                    return Err(89);
+                }
                 match ossl_cipher_format {
-                    true => command.arg("-cipher").arg(cipher_string_to_ossl(&cipher.to_string())),
-                    false => command.arg("-nss-cipher").arg(cipher.to_string()),
+                    true => command.arg("-cipher").arg(cipher.to_string().split(";").collect::<Vec<&str>>().get(1).unwrap()),
+                    false => command.arg("-nss-cipher").arg(cipher.to_string().split(";").collect::<Vec<&str>>().get(0).unwrap()),
                 };
             }
             if let Some(ref flags) = a.flags {
@@ -78,7 +76,27 @@ impl Agent {
         }
 
         // Add specific args.
-        for arg in &args {
+        // Modify cipher arguments to match the format required by the different shims. 
+        let mut cipher_arg=false;
+        for a in &args {
+            let mut arg = a.clone();
+            if cipher_arg {
+                if check_cipher_blacklist(&arg, path) {
+                    return Err(89);
+                }
+                match ossl_cipher_format {
+                    true => command.arg(arg.to_string().split(";").collect::<Vec<&str>>().get(1).unwrap()),
+                    false => command.arg(arg.to_string().split(";").collect::<Vec<&str>>().get(0).unwrap()),
+                };
+                cipher_arg=false;
+                continue;
+            }
+            if arg.contains("-cipher") {
+                if !ossl_cipher_format {
+                    arg.insert_str(0, "-nss")
+                }
+                cipher_arg=true;
+            }
             command.arg(arg);
         }
 
@@ -160,4 +178,39 @@ impl Agent {
         debug!("Exit status for {} = {}", self.name, code);
         output.clone()
     }
+}
+
+fn check_cipher_blacklist(cipher: &str, shim: &str) -> bool {
+    let mut bl = fs::File::open("cipher_blacklist.json").unwrap();
+    let mut bls = String::from("");
+    bl.read_to_string(&mut bls)
+        .expect("Could not read file to string");
+    let blacklist: CipherBlacklist = json::decode(&bls).expect("Malformed JSON blacklist file.");
+    
+    if shim.contains("bssl_shim") {
+        for c in blacklist.bssl_blacklist.unwrap_or_else(|| {
+            vec![]
+        }) {
+            if c == cipher {
+                return true;
+            }
+        }
+    } else if shim.contains("ossl_shim") {
+        for c in &blacklist.ossl_blacklist.unwrap_or_else(|| {
+            vec![]
+        }) {
+            if c == cipher {
+                return true;
+            }
+        }
+    } else {
+        for c in &blacklist.nss_blacklist.unwrap_or_else(|| {
+            vec![]
+        }) {
+            if c == cipher {
+                return true;
+            }
+        }
+    }
+    return false;
 }

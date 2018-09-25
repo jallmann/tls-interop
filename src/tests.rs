@@ -89,6 +89,7 @@ fn get_simple_test_case() -> TestCase {
         server_key: None,
         client_params: None,
         server_params: None,
+        shared_params: None,
         client: None,
         server: None,
     }
