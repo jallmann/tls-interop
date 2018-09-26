@@ -1,17 +1,7 @@
-#!/usr/bin/env bash
+ü#!/usr/bin/env bash
 BASE_DIR=$(cd $(dirname $0); pwd -P)
 CASE_FILE="cases.json"
 MODE=""
-
-while [ $# -gt 0 ]; do
-    case $1 in
-        -v) export RUST_LOG=debug ;;
-        -m) MODE="$2"; shift ;;
-        -c) CASE_FILE="$2"; shift;;
-        *) echo "Error: Unknown argument."; exit 2 ;;
-    esac
-    shift
-done
 
 while [ $# -gt 0 ]; do
     case $1 in
