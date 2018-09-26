@@ -1,14 +1,21 @@
-ü#!/usr/bin/env bash
+#!/usr/bin/env bash
 BASE_DIR=$(cd $(dirname $0); pwd -P)
 CASE_FILE="cases.json"
 MODE=""
+
+print_help() {
+  printf "Help: \n \
+        -v) Verbose output.\n \
+        -m) Test mode. [ all | loopback | ossl_server | ossl_client | bssl_server | bssl_shim ]\n \
+        -c) Case file. (Optional. Default cases.json) \n"
+}
 
 while [ $# -gt 0 ]; do
     case $1 in
         -v) export RUST_LOG=debug ;;
         -m) MODE="$2"; shift ;;
         -c) CASE_FILE="$2"; shift;;
-        *) echo "Error: Unknown argument."; exit 2 ;;
+        *) print_help; exit 2 ;;
     esac
     shift
 done
@@ -80,6 +87,6 @@ case $MODE in
       run_shim_pair $NSS_SHIM $NSS_SHIM
       ;;
   *)
-    echo "No valid test mode specified."
+    print_help
     ;;
 esac

@@ -33,11 +33,11 @@
               ]
             },
             "client" : {
-                "min_version" : 770,
+                "min_version" : 772,
                 "max_version" : 772
             },
             "server" : {
-                "min_version" : 770,
+                "min_version" : 772,
                 "max_version" : 772
             }
         },

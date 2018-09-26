@@ -9,9 +9,6 @@ use mio_extras::channel;
 use mio_extras::channel::Receiver;
 use std::process::{Command, ExitStatus, Output, Stdio};
 use std::thread;
-use std::fs;
-use std::io::prelude::*;
-use rustc_serialize::json;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -32,6 +29,7 @@ impl Agent {
         name: &str,
         path: &str,
         agent: &Option<TestCaseAgent>,
+        blacklist: &CipherBlacklist,
         args: Vec<String>,
         ipv4: bool,
     ) -> Result<Agent, i32> {
@@ -60,7 +58,7 @@ impl Agent {
                 command.arg(min.to_string());
             }
             if let Some(ref cipher) = a.cipher {
-                if check_cipher_blacklist(cipher, path) {
+                if blacklist.check(cipher, path) {
                     return Err(89);
                 }
                 match ossl_cipher_format {
@@ -81,7 +79,7 @@ impl Agent {
         for a in &args {
             let mut arg = a.clone();
             if cipher_arg {
-                if check_cipher_blacklist(&arg, path) {
+                if blacklist.check(&arg, path) {
                     return Err(89);
                 }
                 match ossl_cipher_format {
@@ -178,39 +176,4 @@ impl Agent {
         debug!("Exit status for {} = {}", self.name, code);
         output.clone()
     }
-}
-
-fn check_cipher_blacklist(cipher: &str, shim: &str) -> bool {
-    let mut bl = fs::File::open("cipher_blacklist.json").unwrap();
-    let mut bls = String::from("");
-    bl.read_to_string(&mut bls)
-        .expect("Could not read file to string");
-    let blacklist: CipherBlacklist = json::decode(&bls).expect("Malformed JSON blacklist file.");
-    
-    if shim.contains("bssl_shim") {
-        for c in blacklist.bssl_blacklist.unwrap_or_else(|| {
-            vec![]
-        }) {
-            if c == cipher {
-                return true;
-            }
-        }
-    } else if shim.contains("ossl_shim") {
-        for c in &blacklist.ossl_blacklist.unwrap_or_else(|| {
-            vec![]
-        }) {
-            if c == cipher {
-                return true;
-            }
-        }
-    } else {
-        for c in &blacklist.nss_blacklist.unwrap_or_else(|| {
-            vec![]
-        }) {
-            if c == cipher {
-                return true;
-            }
-        }
-    }
-    return false;
 }
