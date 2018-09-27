@@ -12,6 +12,7 @@ use std::thread;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
+const ERR_CIPHER_BLACKLISTED: i32 = 89;
 
 #[allow(dead_code)]
 pub struct Agent {
@@ -59,7 +60,7 @@ impl Agent {
             }
             if let Some(ref cipher) = a.cipher {
                 if blacklist.check(cipher, path) {
-                    return Err(89);
+                    return Err(ERR_CIPHER_BLACKLISTED);
                 }
                 match ossl_cipher_format {
                     true => command.arg("-cipher").arg(cipher.to_string().split(";").collect::<Vec<&str>>().get(1).unwrap()),
@@ -80,7 +81,7 @@ impl Agent {
             let mut arg = a.clone();
             if cipher_arg {
                 if blacklist.check(&arg, path) {
-                    return Err(89);
+                    return Err(ERR_CIPHER_BLACKLISTED);
                 }
                 match ossl_cipher_format {
                     true => command.arg(arg.to_string().split(";").collect::<Vec<&str>>().get(1).unwrap()),
