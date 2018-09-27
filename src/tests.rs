@@ -154,7 +154,7 @@ fn prepare_config(conf_type: ConfigType) -> TestConfig {
         },
         blacklist: {
             let mut blacklist = config::CipherBlacklist::new();
-            blacklist.init();
+            blacklist.init(BLACKLIST_FILE);
             blacklist
         }
     }

@@ -24,6 +24,7 @@ use test_result::TestResult;
 
 const CLIENT: Token = mio::Token(0);
 const SERVER: Token = mio::Token(1);
+const BLACKLIST_FILE: &str = "cipher_blacklist.json";
 
 fn copy_data(poll: &Poll, from: &mut Agent, to: &mut Agent) {
     let mut buf: [u8; 16384] = [0; 16384];
@@ -370,7 +371,7 @@ fn main() {
         .get_matches();
     
     let mut bl = CipherBlacklist::new();
-    bl.init("cipher_blacklist.json");
+    bl.init(BLACKLIST_FILE);
      
     let config = TestConfig {
         client_shim: String::from(matches.value_of("client").unwrap()),
