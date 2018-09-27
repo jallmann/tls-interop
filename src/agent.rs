@@ -9,6 +9,7 @@ use mio_extras::channel;
 use mio_extras::channel::Receiver;
 use std::process::{Command, ExitStatus, Output, Stdio};
 use std::thread;
+use std::time::Duration;
 
 const SERVER: Token = mio::Token(1);
 const STATUS: Token = mio::Token(2);
@@ -170,11 +171,16 @@ impl Agent {
         poll.register(&self.child, STATUS, Ready::readable(), PollOpt::level())
             .unwrap();
         let mut events = Events::with_capacity(1);
-        poll.poll(&mut events, None).unwrap();
-
+        debug!("Created events. Polling...");
+        let poll_res = poll.poll(&mut events, Some(Duration::new(30, 0))).unwrap();
+        debug!("Poll successful or timed out with {:?}. Trying to receive output...", poll_res);
         let output = self.child.try_recv().unwrap();
+        debug!("Output is: {:?}", output);
         let code = output.status.code().unwrap_or(-1);
         debug!("Exit status for {} = {}", self.name, code);
+        if poll_res != 1 {
+            thread::sleep(Duration::new(30, 0));
+        }
         output.clone()
     }
 }
