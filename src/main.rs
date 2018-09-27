@@ -18,18 +18,12 @@ mod flatten;
 mod test_result;
 mod tests;
 use agent::Agent;
-use config::{TestCase, TestCaseParams, TestCases, CipherBlacklist, CipherBlacklistX};
+use config::{TestCase, TestCaseParams, TestCases, CipherBlacklist};
 use flatten::flatten;
 use test_result::TestResult;
 
 const CLIENT: Token = mio::Token(0);
 const SERVER: Token = mio::Token(1);
-
-pub static BLACKLIST: CipherBlacklist = CipherBlacklist {
-    nss_blacklist: None,
-    bssl_blacklist: None,
-    ossl_blacklist: None
-};
 
 fn copy_data(poll: &Poll, from: &mut Agent, to: &mut Agent) {
     let mut buf: [u8; 16384] = [0; 16384];
@@ -376,12 +370,8 @@ fn main() {
         .get_matches();
     
     let mut bl = CipherBlacklist::new();
-    bl.init();
-    
-    let mut blx = CipherBlacklistX::new();
-    blx.init();
-    print!("hashmaptest: {:?}", blx.blacklist.unwrap().get("_COMMENT: "));
-         
+    bl.init("cipher_blacklist.json");
+     
     let config = TestConfig {
         client_shim: String::from(matches.value_of("client").unwrap()),
         server_shim: String::from(matches.value_of("server").unwrap()),
