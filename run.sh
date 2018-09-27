@@ -28,24 +28,26 @@ OSSL_SHIM="$BASE_DIR/../openssl/test/ossl_shim/ossl_shim"
 SHIM_ARRAY=($NSS_SHIM $BSSL_SHIM $OSSL_SHIM)
 
 run_shim_pair() {
+  SHIM1=$1
+  SHIM2=$2
   # If NSS acts as the client, interop needs this argument.
   # It would become obsolete if bssl and ossl could actively initiate
   # communication after the handshake.
   CLIENT_WRITES=""
-  if [[ $1 = *"nss_bogo_shim"* ]]; then
+  if [[ $SHIM1 = *"nss_bogo_shim"* ]]; then
     CLIENT_WRITES="--client-writes-first"
   fi
 
   # The ossl_shim is currently not properly IPv6 capable, which is why interop
   # needs this argument when ossl_shim is involved in the test case.
   IP4=""
-  if [[ $1 = *"ossl"* ]] || [[ $2 = *"ossl"* ]] ; then
+  if [[ $SHIM1 = *"ossl"* ]] || [[ $SHIM2 = *"ossl"* ]] ; then
     IP4="--force-IPv4"
   fi
 
   cargo run -- \
-  --client $1 \
-  --server $2 \
+  --client $SHIM1 \
+  --server $SHIM2 \
   --rootdir $CERT_DIR \
   --test-cases $BASE_DIR/$CASE_FILE \
   $CLIENT_WRITES \
@@ -68,7 +70,7 @@ case $MODE in
         done
       ;;
 
-  # Hardcoded cases for all currently working combinations of shuims are kept
+  # Hardcoded cases for all currently working combinations of shims are kept
   # for conveniently running certain shim pairs against each other during
   # development.
   "boring_server")
