@@ -171,16 +171,11 @@ impl Agent {
         poll.register(&self.child, STATUS, Ready::readable(), PollOpt::level())
             .unwrap();
         let mut events = Events::with_capacity(1);
-        debug!("Created events. Polling...");
-        let poll_res = poll.poll(&mut events, Some(Duration::new(30, 0))).unwrap();
-        debug!("Poll successful or timed out with {:?}. Trying to receive output...", poll_res);
-        let output = self.child.try_recv().unwrap();
-        debug!("Output is: {:?}", output);
+        poll.poll(&mut events, Some(Duration::new(5, 0))).unwrap();
+        debug!("Poll successful or timed out. Trying to receive output...");
+        let output = self.child.try_recv().expect("Failed to receive output from subthread.");
         let code = output.status.code().unwrap_or(-1);
         debug!("Exit status for {} = {}", self.name, code);
-        if poll_res != 1 {
-            thread::sleep(Duration::new(30, 0));
-        }
         output.clone()
     }
 }
