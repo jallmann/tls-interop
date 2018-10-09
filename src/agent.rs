@@ -171,6 +171,9 @@ impl Agent {
         poll.register(&self.child, STATUS, Ready::readable(), PollOpt::level())
             .unwrap();
         let mut events = Events::with_capacity(1);
+        // There's an (arbitrary) 5 second timeout for polling, because this poll seemed to cause
+        // indefinite blocking of the main thread in rare cases, even when there was an event
+        // available on the channel.
         poll.poll(&mut events, Some(Duration::new(5, 0))).unwrap();
         debug!("Poll successful or timed out. Trying to receive output...");
         let output = self.child.try_recv().expect("Failed to receive output from subthread.");
