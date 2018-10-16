@@ -155,8 +155,6 @@ impl Results {
             (TestResult::Skipped, _, _) => self.skipped += 1,
             (TestResult::Failed, client, server) => {
                 println!("\nFAILED: {}\n", Results::case_name(case, index));
-                //Stdout would also be available for printing at this point, in case it turns out
-                //to be informative, which was never the case so far.
                 match client {
                     Some(c) => {
                         println!(
@@ -189,9 +187,11 @@ impl Results {
     }
 }
 
-// This is not yet designed to handle combinations of different parameters.
-// Combining more than one set of parameters, e.g. versions and ciphers, might
-// result in combinatorial explosion, as intended. But that's not guaranteed.
+// This function currently does not perform combinatorial explosion between
+// different types of arguments, like versions and ciphers, for a single agent but
+// processes them consecutively.
+// Combinatorial explosion will only happen in test_case_meta() between the separate
+// sets of server_args, client_args, and shared_args.
 fn make_params(params: &Option<TestCaseParams>) -> Vec<Vec<String>> {
     let mut mat = vec![];
 
@@ -278,11 +278,8 @@ fn run_test_case_inner(
     // Create the server and client args
     let mut server_args = extra_server_args.clone();
     let mut client_args = extra_client_args.clone();
-
-    for arg in extra_shared_args {
-        server_args.push(arg.clone());
-        client_args.push(arg.clone());
-    }
+    server_args.append(&mut extra_shared_args.clone());
+    client_args.append(&mut extra_shared_args.clone());
 
     server_args.push(String::from("-server"));
     let key_base = match case.server_key {

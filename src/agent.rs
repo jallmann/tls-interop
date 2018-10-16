@@ -197,10 +197,14 @@ impl Agent {
         poll.register(&self.child, STATUS, Ready::readable(), PollOpt::level())
             .unwrap();
         let mut events = Events::with_capacity(1);
-        // There's an (arbitrary) 5 second timeout for polling, because this poll seemed to cause
-        // indefinite blocking of the main thread in rare cases, even when there was an event
-        // available on the channel.
-        poll.poll(&mut events, Some(Duration::new(5, 0))).unwrap();
+        // poll() used to cause indefinite blocking of the main thread in rare cases, and consecuently
+        // intermittent timeouts of the whole test suite. It is now set to time out and stop blocking 
+        // after 30 seconds.
+        // The output of the subthread should always be readable on the channel by then. It seems that 
+        // poll() didn't become aware of this if it was registered after the arrival of the event.
+        // There's currently no proof this fixes the issue, but no timeouts have been observed since 
+        // the change was implemented.
+        poll.poll(&mut events, Some(Duration::new(30, 0))).unwrap();
         debug!("Poll successful or timed out. Trying to receive output...");
         let output = self
             .child
