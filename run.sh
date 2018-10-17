@@ -30,14 +30,14 @@ run_shim_pair() {
   SHIM2="$2"
 
   args=()
-  
+
   # If NSS acts as the client, interop needs this argument.
   # It would become obsolete if bssl and ossl could actively initiate
   # communication after the handshake.
-  if [[ $SHIM1 = "nss" ]]; then 
+  if [[ $SHIM1 = "nss" ]]; then
     args+=(--client-writes-first)
   fi
-  
+
   # The ossl_shim is currently not properly IPv6 capable, which is why interop
   # needs this argument when ossl_shim is involved in the test case.
   if [[ $SHIM1 == "ossl" ]] || [[ $SHIM2 == "ossl" ]] ; then
@@ -60,8 +60,8 @@ run_mode() {
 }
 
 invalid_mode=true
-run_mode "$MODE" boring_server "nss" "bssl"
-run_mode "$MODE" boring_client "bssl" "nss"
+run_mode "$MODE" bssl_server "nss" "bssl"
+run_mode "$MODE" bssl_client "bssl" "nss"
 run_mode "$MODE" ossl_server "nss" "ossl"
 run_mode "$MODE" ossl_client "ossl" "nss"
 run_mode "$MODE" loopback "nss" "nss"

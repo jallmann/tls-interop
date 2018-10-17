@@ -18,13 +18,13 @@ mod flatten;
 mod test_result;
 mod tests;
 use agent::Agent;
-use config::{CipherBlacklist, TestCase, TestCaseParams, TestCases};
+use config::{CipherMap, TestCase, TestCaseParams, TestCases};
 use flatten::flatten;
 use test_result::TestResult;
 
 const CLIENT: Token = mio::Token(0);
 const SERVER: Token = mio::Token(1);
-const BLACKLIST_FILE: &str = "cipher_blacklist.json";
+const CIPHER_MAP_FILE: &str = "cipher_map.json";
 
 fn copy_data(poll: &Poll, from: &mut Agent, to: &mut Agent) {
     let mut buf: [u8; 16384] = [0; 16384];
@@ -96,7 +96,7 @@ pub struct TestConfig {
     rootdir: String,
     client_writes_first: bool,
     force_ipv4: bool,
-    blacklist: CipherBlacklist,
+    cipher_map: CipherMap,
 }
 
 // The results of the entire test run.
@@ -307,7 +307,7 @@ fn run_test_case_inner(
         "server",
         &config.server_shim,
         &case.server,
-        &config.blacklist,
+        &config.cipher_map,
         server_args,
         config.force_ipv4,
     ) {
@@ -321,7 +321,7 @@ fn run_test_case_inner(
         "client",
         &config.client_shim,
         &case.client,
-        &config.blacklist,
+        &config.cipher_map,
         client_args,
         config.force_ipv4,
     ) {
@@ -386,8 +386,8 @@ fn main() {
         )
         .get_matches();
 
-    let mut bl = CipherBlacklist::new();
-    bl.init(BLACKLIST_FILE);
+    let mut map = CipherMap::new();
+    map.init(CIPHER_MAP_FILE);
 
     let config = TestConfig {
         client_shim: String::from(matches.value_of("client").unwrap()),
@@ -395,7 +395,7 @@ fn main() {
         rootdir: String::from(matches.value_of("rootdir").unwrap()),
         client_writes_first: matches.is_present("client-writes-first"),
         force_ipv4: matches.is_present("force-IPv4"),
-        blacklist: bl,
+        cipher_map: map,
     };
 
     let mut f = fs::File::open(matches.value_of("cases").unwrap()).unwrap();
